@@ -25,7 +25,7 @@
 
 ### Step 1: Create Secret and store Access Key info in Vault
 
-*NOTE: For this step we will only be showing you how to utlize Vault in **'Dev'** mode.  This is NOT recommended for production use, however much simplier to learn and use for the purposes of this tutorial.  See [Deploy Vault Tutorial] to learn how to use Vault for a production environment.*
+*NOTE: For this step we will only be showing you how to utlize Vault in **'Dev'** mode.  This is NOT recommended for production use, however much simplier to learn and use for the purposes of this tutorial.  See [Deploy Vault Tutorial](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started) and [Seal/Unseal Concepts](https://www.vaultproject.io/docs/concepts/seal) to learn how to use Vault for a production environment.*
    
 TODO: Determine best approach for this step or provide user the option to choose based on here:
 https://learn.hashicorp.com/tutorials/vault/static-secrets#q-how-do-i-enter-my-secrets-without-exposing-the-secret-in-my-shell-s-history
