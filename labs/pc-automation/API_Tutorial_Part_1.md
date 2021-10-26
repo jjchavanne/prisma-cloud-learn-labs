@@ -27,7 +27,11 @@
 
 *NOTE: For this step we will only be showing you how to utlize Vault in **'Dev'** mode.  This is NOT recommended for production use, however much simplier to learn and use for the purposes of this tutorial.  See [Deploy Vault Tutorial](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started) and [Seal/Unseal Concepts](https://www.vaultproject.io/docs/concepts/seal) to learn how to use Vault for a production environment.*
    
-Additional Reading for better understanding options: https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1#bebe
+Additional Reading for better understanding options:
+- https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1#bebe
+- https://www.beyondtrust.com/blog/entry/secrets-management-overview-7-best-practices 
+- https://www.csoonline.com/article/3624577/securing-cicd-pipelines-6-best-practices.html
+- https://docs.aws.amazon.com/secretsmanager/latest/userguide/best-practices.html
    
 
 TODO: Determine best approach for this step or provide user the option to choose based on here:
