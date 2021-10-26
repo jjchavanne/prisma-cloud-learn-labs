@@ -33,3 +33,19 @@ https://learn.hashicorp.com/tutorials/vault/static-secrets#q-how-do-i-enter-my-s
 - Option 2: Use a dash"-"
 - Option 3: Read from a file
 - Option 4: Disable vault command history (in addition to one of the above)
+
+
+Using dev mode, start the dev server:
+```
+vault server -dev
+```
+
+Open a new terminal and create the secret with the three pieces of key/value data (replacing the <TEXT> of each value with your values):
+In your terminal:
+
+```bash
+vault kv put secret/prisma_enterprise_env \
+             pcee_api_url='https://<API_URL_FROM_LINK_ABOVE>' \
+             pcee_accesskey='<YOUR_ACCESS_KEY>' \
+             pcee_secretkey='<YOUR_SECRET_KEY>'
+```
