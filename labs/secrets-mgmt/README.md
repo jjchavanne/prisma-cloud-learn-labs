@@ -12,7 +12,7 @@ Secrets management is a critical component of keeping pieces of sensitive data/s
 - Demonstrate several approaches to managing your secrets
 
 ## Methods and Labs/Tutorials Covered Here:
-NOTE: This is by no means an exhaustive list but at least tries to highlight primary methods with several examples.
+*NOTE: This is by no means an exhaustive list but at least tries to highlight primary methods with several examples.*
    
    
 **Plain-Text:**
