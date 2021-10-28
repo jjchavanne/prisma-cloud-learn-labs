@@ -7,26 +7,30 @@ This tutorial follows the [Hashicorp Learn Vault Tutorials](https://learn.hashic
 - install [Vault](https://learn.hashicorp.com/tutorials/vault/getting-started-install?in=vault/getting-started)
 
 ## Setup Vault Dev Server
-With Vault installed, start the dev server:
+1. With Vault installed, start the dev server:
 ```
 vault server -dev
 ```
 
-Launch a new terminal window.
+2. Launch a new terminal window.
    
-Copy the `export VAULT_ADDR ...` command from the first terminal output and run in the second terminal window.  
+3. Copy the `export VAULT_ADDR ...` command from the first terminal output and run in the second terminal window.  
+   
 **Example:**
 ```
 export VAULT_ADDR='http://127.0.0.1:8200'
 ```
-Save the unseal key somewhere. Don't worry about how to save this securely. For now, just save it anywhere.
 
-Set the `VAULT_TOKEN` environment variable value to the generated **Root Token** value displayed in the terminal output.   
+4. Save the unseal key somewhere. Don't worry about how to save this securely. For now, just save it anywhere.
+
+5. Set the `VAULT_TOKEN` environment variable value to the generated **Root Token** value displayed in the terminal output.   
+   
 **Example:**
 ```
 export VAULT_TOKEN="s.XmpNPoi9sRhYtdKHaQhkHP6x"
 ```
-To verify the server is running:
+   
+6. To verify the server is running:
 ```
 vault status
 ```
