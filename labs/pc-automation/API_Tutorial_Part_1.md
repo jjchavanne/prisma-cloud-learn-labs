@@ -20,7 +20,7 @@ This lab uses one of our [Secrets Management tool building blocks].   I'm choosi
 
 | **Key** | **Value** | **How To Obtain** |
 | ------------------ | --------------------- | ---------------- |
-| **pcee_api_url** | **'https://<API_URL>'** | *Visit [Prisma PAN API Docs](https://prisma.pan.dev/api/cloud/api-urls) to map your tenant URL to the API URL.* |
+| **pcee_api_url** | **'https://<YOUR_TENANT_API_URL>'** | *Visit [Prisma PAN API Docs](https://prisma.pan.dev/api/cloud/api-urls) to map your tenant URL to the tenant API URL.* |
 | **pcee_accesskey** | **'<YOUR_ACCESS_KEY>'** | *Log into Prisma Cloud and go to Settings > Access Keys* |
 | **pcee_secretkey** | **'<YOUR_SECRET_KEY>'** | *Obtain your Secret Key at time of Access Key creation.* |
 
@@ -28,7 +28,7 @@ This lab uses one of our [Secrets Management tool building blocks].   I'm choosi
 
 I'm choosing to Create Secret and store Access Key info in Vault in Dev mode.
    
-Feel free to choose another Secrets Management   
+Feel free to choose another Secrets Management option.  
 TODO: Refer to other options.
    
    
@@ -42,15 +42,34 @@ vault server -dev
 
 Before proceeding, suggest to review and consider [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
 )
+   
+Launch a new terminal window and Copy the `export VAULT_ADDR ...` command from the first terminal output and run in the second terminal window.  
+   
+> **Example:**
+```
+export VAULT_ADDR='http://127.0.0.1:8200'
+```
 
-Open a new terminal.
+Save the unseal key somewhere. Don't worry about how to save this securely. For now, just save it anywhere.
 
-and create the secret with the three pieces of key/value data (replacing the <TEXT> of each value with your values):
+Set the `VAULT_TOKEN` environment variable value to the generated **Root Token** value displayed in the terminal output.   
+   
+> **Example:**
+```
+export VAULT_TOKEN='s.XmpNPoi9sRhYtdKHaQhkHP6x'
+```
+   
+To verify the server is running:
+```
+vault status
+```
+
+Using your Prisma Cloud key/values, create the secret with the three pieces of key/value data (replacing the '\<TEXT>' of each value with your values):
 In your terminal:
 
 ```bash
 vault kv put secret/prisma_enterprise_env \
-             pcee_api_url='https://<API_URL_FROM_LINK_ABOVE>' \
+             pcee_api_url='https://<YOUR_TENANT_API_URL>' \
              pcee_accesskey='<YOUR_ACCESS_KEY>' \
              pcee_secretkey='<YOUR_SECRET_KEY>'
 ```
