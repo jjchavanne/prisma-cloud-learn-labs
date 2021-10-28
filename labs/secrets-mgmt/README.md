@@ -34,6 +34,7 @@ Secrets management is a critical component of keeping pieces of sensitive data/s
 
 ## Additional Reading:
 
+- https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-compute/secrets/secrets_manager.html
 - https://blog.gruntwork.io/a-comprehensive-guide-to-managing-secrets-in-your-terraform-code-1d586955ace1#bebe
 - https://www.beyondtrust.com/blog/entry/secrets-management-overview-7-best-practices 
 - https://www.csoonline.com/article/3624577/securing-cicd-pipelines-6-best-practices.html
