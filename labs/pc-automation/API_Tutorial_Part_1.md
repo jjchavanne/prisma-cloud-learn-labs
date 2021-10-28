@@ -2,13 +2,14 @@
    
 **Learn how to securely automate tasks with the Prisma Cloud API**
 
-**Lab Building Blocks** 
+This lab uses one of our [Secrets Management tool building blocks].   I'm choosing to use Vault in 'Dev' mode for this tutorial, however because these labs are written in a modular fashion, you can swap out for another Secrets Management method if you desire.  
 ![alt text](../../images/secrets-bash-2.jpg)
 
 ## Objectives:
-1. Utilize Hashicorp Vault, an open source Secrets Manager to store and retreive Access Keys
-2. Create a bash script to automate interaction with the Prisma Cloud API
-3. Utilize jq for processing and filtering JSON data retreived from Prisma Cloud
+1. Create a bash script to automate interaction with the Prisma Cloud API
+2. Utilize jq for processing and filtering JSON data retreived from Prisma Cloud
+3. Utilize a Secrets Managment tool to store and retreive Access Keys
+
 
 ## Prerequisites:
 - access to a Prisma Cloud tenant
