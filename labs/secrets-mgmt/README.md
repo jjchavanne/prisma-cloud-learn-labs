@@ -22,7 +22,6 @@ Secrets management is a critical component of keeping pieces of sensitive data/s
 **Environment Variables:**
 - Environment variables passed directly via shell 
 - Read from a file
-- Additional options to not save in bash history
    
 **Encrypted Files:**
 - Not covered at this time
@@ -31,6 +30,8 @@ Secrets management is a critical component of keeping pieces of sensitive data/s
 - Hashicorp Vault in Dev Mode
 - More to come...
 
+## Other Best Practices:
+- Keeping Secrets out of Bash History
 
 ## Additional Reading:
 
