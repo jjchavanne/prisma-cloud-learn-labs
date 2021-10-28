@@ -7,30 +7,28 @@ This tutorial follows the [Hashicorp Learn Vault Tutorials](https://learn.hashic
 - install [Vault](https://learn.hashicorp.com/tutorials/vault/getting-started-install?in=vault/getting-started)
 
 ## Setup Vault Dev Server
-1. With Vault installed, start the dev server:
+With Vault installed, start the dev server:
 ```
 vault server -dev
 ```
 
-2. Launch a new terminal window.
+Launch a new terminal window and Copy the `export VAULT_ADDR ...` command from the first terminal output and run in the second terminal window.  
    
-3. Copy the `export VAULT_ADDR ...` command from the first terminal output and run in the second terminal window.  
-   
-**Example:**
+> **Example:**
 ```
 export VAULT_ADDR='http://127.0.0.1:8200'
 ```
 
-4. Save the unseal key somewhere. Don't worry about how to save this securely. For now, just save it anywhere.
+Save the unseal key somewhere. Don't worry about how to save this securely. For now, just save it anywhere.
 
-5. Set the `VAULT_TOKEN` environment variable value to the generated **Root Token** value displayed in the terminal output.   
+Set the `VAULT_TOKEN` environment variable value to the generated **Root Token** value displayed in the terminal output.   
    
-**Example:**
+> **Example:**
 ```
-export VAULT_TOKEN="s.XmpNPoi9sRhYtdKHaQhkHP6x"
+export VAULT_TOKEN='s.XmpNPoi9sRhYtdKHaQhkHP6x'
 ```
    
-6. To verify the server is running:
+To verify the server is running:
 ```
 vault status
 ```
@@ -39,12 +37,12 @@ vault status
 
 To write a secret, use the `vault kv put secret/<SECRET_NAME> <KEY_NAME>=<VALUE>` command.  
    
-Example of a secret with a single key/value pair:
+> **Example of a secret with a single key/value pair:**
 ```
 vault kv put secret/myapp password=S3cure-P@ssw0rd!
 ```
 
-Example with mutiple key/value pairs:
+> **Example with mutiple key/value pairs:**
 ```
 vault kv put secret/myapp \
     access_key=My-Access-Key \
@@ -55,7 +53,7 @@ vault kv put secret/myapp \
 
 Use the command `vault kv get <PATH>`
   
-Example:
+> **Example:**
 ```
 vault kv put secret/myapp
 ```
