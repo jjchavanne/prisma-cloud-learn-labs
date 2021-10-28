@@ -5,4 +5,4 @@ https://learn.hashicorp.com/tutorials/vault/static-secrets#q-how-do-i-enter-my-s
 - Option 1: Write directly in shell
 - Option 2: Use a dash"-"
 - Option 3: Read from a file
-- Option 4: Disable vault command history (in addition to one of the above)
+- Option 4: Disable command history (in addition to one of the above). See docs for detail on HISTCONTROL & HISTIGNORE https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html#index-HISTCONTROL
