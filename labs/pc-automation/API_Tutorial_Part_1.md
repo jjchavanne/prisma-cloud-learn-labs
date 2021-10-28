@@ -11,15 +11,12 @@ This lab uses one of our [Secrets Management tool building blocks].   I'm choosi
 3. Utilize a Secrets Managment tool to store and retreive Access Keys
 
 
-## Prerequisites:
+## 0 - Prerequisites:
 - access to a Prisma Cloud tenant
 - terminal shell (i.e. bash or zsh)
 - install [Vault](https://learn.hashicorp.com/tutorials/vault/getting-started-install?in=vault/getting-started)
 - install [jq](https://stedolan.github.io/jq/download/)
-
-## Getting Started:
-   
-### Obtain Values for the following keys:
+- Obtain Values for the following keys:
 
 | **Key** | **Value** | **How To Obtain** |
 | ------------------ | --------------------- | ---------------- |
@@ -27,9 +24,15 @@ This lab uses one of our [Secrets Management tool building blocks].   I'm choosi
 | **pcee_accesskey** | **'<YOUR_ACCESS_KEY>'** | *Log into Prisma Cloud and go to Settings > Access Keys* |
 | **pcee_secretkey** | **'<YOUR_SECRET_KEY>'** | *Obtain your Secret Key at time of Access Key creation.* |
 
-### Step 1: Create Secret and store Access Key info in Vault
+## 1 - Setup Secrets Management 
 
-*NOTE: For this step we will only be showing you how to utlize Vault in **'Dev'** mode.  This is NOT recommended for production use, however much simplier to learn and use for the purposes of this tutorial.  See [Deploy Vault Tutorial](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started) and [Seal/Unseal Concepts](https://www.vaultproject.io/docs/concepts/seal) to learn how to use Vault for a production environment.*
+I'm choosing to Create Secret and store Access Key info in Vault in Dev mode.
+   
+Feel free to choose another Secrets Management   
+TODO: Refer to other options.
+   
+   
+*NOTE: Using Vault in **'Dev'** mode is NOT recommended for production use, however much simplier to learn and use for the purposes of this tutorial.  See [Deploy Vault Tutorial](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started) and [Seal/Unseal Concepts](https://www.vaultproject.io/docs/concepts/seal) to learn how to use Vault for a production environment.*
    
 
 Using dev mode, start the dev server:
@@ -37,10 +40,12 @@ Using dev mode, start the dev server:
 vault server -dev
 ```
 
-Before proceeding, review and consider [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
+Before proceeding, suggest to review and consider [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
 )
 
-Open a new terminal and create the secret with the three pieces of key/value data (replacing the <TEXT> of each value with your values):
+Open a new terminal.
+
+and create the secret with the three pieces of key/value data (replacing the <TEXT> of each value with your values):
 In your terminal:
 
 ```bash
