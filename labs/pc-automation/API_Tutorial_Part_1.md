@@ -294,19 +294,37 @@ Now it's time to invoke your script again.
 bash prisma_api_test.sh
 ```
 
-You should see the curl progress and your JWT print out in the response. That's perfect. Now we can access all the other Prisma Cloud CSPM API's (It's a similar process with some minor tweaks when accessing the CWPP API).
+You should see the curl progress and your JWT print out in the response. That's perfect. Now we can access all the other Prisma Cloud CSPM API's (It's a similar process with some minor tweaks when accessing the CWPP API.  We'll run through that in another tutorial).
+
+## TODO: Move the `-s` portion from below steps into here and them move Steps 5 & 6 into a separate tutorial.  Perform testing.
 
 ## 5 - Perform a GET Request
 
 For this next step we will add a GET request into our script in order to fetch some other data.
 
-TODO: Add details to:
-- add link and provide direction to doc
-- export API_ENDPOINT_SUFFIX variable
+If you visit the [Prisma Cloud API Docs](https://prisma.pan.dev/api/cloud/cspm/cspm-api) and go to any of the CSPM API Endpoints and view a GET Request sample under 'Shell + Curl' you will notice they all look the same except for one piece, which is the actual API endpoint URL suffix in the URL field.   
+   
+> Example 1: the [List Compliance Standards GET](https://prisma.pan.dev/api/cloud/cspm/compliance-standards#operation/get-all-standards) Request sample
+```
+curl --request GET \
+  --url https://api.prismacloud.io/compliance \
+  --header 'x-redlock-auth: REPLACE_KEY_VALUE'
+```
 
-Go to the [Prisma Pan API Documentation]
+> Example 2: the [Enterprise Settings GET](https://prisma.pan.dev/api/cloud/cspm/settings#operation/get-enterprise-settings) Request sample
+```
+curl --request GET \
+  --url https://api.prismacloud.io/settings/enterprise \
+  --header 'x-redlock-auth: REPLACE_KEY_VALUE'
+```  
 
-
+To make it easier to work in our script, we will insert three variables and a new header to retreive the data in json format.  
+1. Replace `https://api.prismacloud.io` with our API variable: `${pcee_API_URL}`
+2. Replace `REPLACE_KEY_VALUE` with the AUTH_TOKEN variable we created in the last step: `${pcee_AUTH_TOKEN}`
+3. Replace the text after the `/` after the API prefix in the URL field with this new one: `${API_ENDPOINT_SUFFIX}`
+4. Add a `\` at the end of the third line and a new header field `--header 'Accept: application/json'` on the fourth line
+   
+The updated code block should look like this:
 
 ```bash
 curl --request GET \
@@ -314,8 +332,12 @@ curl --request GET \
      --header "x-redlock-auth: ${pcee_AUTH_TOKEN}" \
      --header 'Accept: application/json'
 ```
-
+   
 ## 6 - Calling your script to retreive data
+
+There! Much better! Let's copy that code block into our clipboard and paste it back into our script. `nano prisma_api_test.sh`
+
+When editing our script we'll want to quiet the output of our api calls by adding a `-s` after the `curl commands`. (You'll see why I'm doing this in a moment)
 
 After pasting the modified request back into the script and adding the `-s` to our `curl` commands, our script should now look like the code block below:
 
@@ -339,20 +361,33 @@ pcee_AUTH_TOKEN=$(curl -s --request POST \
 
 curl -s --request GET \
         --url "${pcee_API_URL}/${API_ENDPOINT_SUFFIX}" \
-        --header "x-redlock-auth: ${pcee_AUTH_TOKEN}"
+        --header "x-redlock-auth: ${pcee_AUTH_TOKEN}" \
+        --header 'Accept: application/json'
 ```        
-
-Okay, time to call our script again. Hit `ctrl + x` then `y` to save and exit. 
-
-In terminal we'll invoke our script again with bash, but this time we'll add `| jq` so it "pretty prints" the output. 
-
-```bash
-bash prisma_api_test.sh | jq
-```
 
 The reason why we added the `-s` to our curl command is so the output can be filtered correctly with jq. 
 
 _TIP: instead of `-s` you might try `-v` to your curl command if you don't get the expected response. `-v` enables verbose mode which will allow you to see the HTTP code that is returned. This can greatly help when debugging_
 
-Okay so now you have the data pretty printed, but the output is probably long and ugly. Let's send the output to a `temp.json` file so we can understand what we want to look at. `bash prisma_api_test.sh | jq > temp.json`
+Hit `ctrl + x` then `y` to save and exit. 
+   
+Before we can call our script again, we need to export the new `API_ENDPOINT_SUFFIX` environment variable we just added.  To test this out, we will pick a simple one, [Enterprise Settings - GET](https://prisma.pan.dev/api/cloud/cspm/settings#operation/get-enterprise-settings)
+   
+In your terminal, set the variable to the API Endpoint suffix from the docs.  In this test case it's: `settings/enterprise` 
+```
+export API_ENDPOINT_SUFFIX="settings/enterprise"
+```
+   
+Invoke our script again with bash, but this time we'll add `| jq` so it "pretty prints" the output. 
+
+```bash
+bash prisma_api_test.sh | jq
+```
+
+Let's test another API Endpoint.  Change your enviroment variable for [List Compliance Standards - GET](https://prisma.pan.dev/api/cloud/cspm/compliance-standards#operation/get-all-standards) request.   
+In terminal: 
+```
+export API_ENDPOINT_SUFFIX="compliance"
+```
+In this case, we have a lot of data.  Let's send the output to a `temp.json` file so we can understand what we want to look at. `bash prisma_api_test.sh | jq > temp.json`
 
