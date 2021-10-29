@@ -9,9 +9,13 @@ Building on Lab 2, we will now push or POST some data to Prisma Cloud.
 
 ## 0 - Getting Started
 
-In the previous labs, you likely were using a User Account to perform API requests.  This however is not ideal for programmatic access.  In this lab, we are going to show you a recommended way.  Programmatic access = Service Account
+In the previous labs, you likely were using a User Account to perform API requests.  This however is not ideal for programmatic access.  In this lab, we are going to show you a recommended way.  Service Account
 
 Assuming you are a Prisma Cloud Administrator yourself, follow the instructions to [Create a new service account](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin/manage-prisma-cloud-administrators/add-service-account-prisma-cloud.html) and give it 'System Admin' access.
+
+Write down the following values you enter, as you will need these again later:
+
+## TODO: add value table here.
 
 ### Environment Variables
 
@@ -77,4 +81,52 @@ If you do not get this, verfiy you environment variables are correct and that yo
 
 
 ## Add POST Request 
+
+Visit the Prisma Cloud API Docs and navigate to the [Access Keys -> Add Access Key - POST](https://prisma.pan.dev/api/cloud/cspm/access-keys#operation/add-access-keys) request page.
+   
+Scroll down to the **Request samples** section and copy and paste the `Shell + Curl` sample to the end of your script:
+
+```
+curl --request POST \
+  --url https://api.prismacloud.io/access_keys \
+  --header 'x-redlock-auth: REPLACE_KEY_VALUE' \
+  --data '{"expiresOn":0,"name":"string","serviceAccountName":"string"}'
+```  
+
+Let's edit this and replace some pieces of data with variables and info:
+
+The first few lines are easy, because it is entering values we have used before.
+   
+Replace `https://api.prismacloud.io` with `${pcee_API_URL}`   
+Replace `REPLACE_KEY_VALUE` with `${pcee_AUTH_TOKEN}`
+
+The `--data` field is similar to what we did in Lab 1.  This is a payload field that we need to inject data into.
+   
+There are three fields to submit.  Looking at the [API docs](https://prisma.pan.dev/api/cloud/cspm/access-keys#operation/add-access-keys), Prisma Cloud expects the body schema to be `application/json` and the following values:
+
+- **expiresOn** = *integer* \<int64> Timestamp in milliseconds when access key expires.  #Meaning this will need to be future dated.  
+- **name** = *string* Access key name
+- **serviceAccountName** = *string* Service account name
+
+Let's convert each field:
+TODO: explain the time field
+
+TODO: Explain the other variables
+
+
+Finally we will create a new payload variable: `pcee_ACCESS_KEY_PAYLOAD`
+
+TODO: Finish explaining
+
+
+Here is the finally code block:
+```
+pcee_ACCESS_KEY_PAYLOAD="{\"expiresOn\":$((`date '-v+60d' '+%s'`*1000)),\"name\":\"$ACCESS_KEY_NAME\",\"serviceAccountName\":\"$SA_NAME\"}"
+
+curl -v --request POST \
+     --url "${pcee_API_URL}/access_keys" \
+     --header 'content-type: application/json' \
+     --header "x-redlock-auth: ${pcee_AUTH_TOKEN}" \
+     --data "${pcee_ACCESS_KEY_PAYLOAD}" 
+```     
 
