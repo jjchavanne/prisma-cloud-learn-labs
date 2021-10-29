@@ -40,6 +40,13 @@ mkdir pc_api_scripts
 cd pc_api_scripts
 ```
 
+## TODO: Insert the Account Group Post request first as an easier starting point.  Then build into the Access key one after.
+
+
+
+
+
+
 Create a new file: `pc_access_key_rotation.sh` 
 
 Paste the below into your script:
