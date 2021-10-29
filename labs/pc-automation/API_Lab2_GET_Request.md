@@ -21,19 +21,21 @@ pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r
 
 pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
 
-# HERE'S WHAT WE COPIED FROM THE DOCUMENTATION PAGE:
-
-pcee_AUTH_TOKEN=$(curl --request POST \
-                       --url "${pcee_API_URL}/login" \
-                       --header 'content-type: application/json; charset=UTF-8' \
-                       --data "${pcee_AUTH_PAYLOAD}" | jq -r '.token')
-
-# Check the output
-
-echo "${pcee_AUTH_TOKEN}"
+# NOTICE THE -s I've added to this call. This quiets the command
+pcee_AUTH_TOKEN=$(curl -s --request POST \
+                          --url "${pcee_API_URL}/login" \
+                          --header 'content-type: application/json; charset=UTF-8' \
+                          --data "${pcee_AUTH_PAYLOAD}" | jq -r '.token')
+                          
+# Print the output of the Token we should have received from the Curl request above.
+echo "${pcee_AUTH_TOKEN}"  
 ```
 
 The output of your command should produce a long string of random characters which represent a JWT token.
+   
+If you do not get this, verfiy the following:
+## TODO: Add verification steps.
+
 
 ## 1 - Perform a GET Request
 
