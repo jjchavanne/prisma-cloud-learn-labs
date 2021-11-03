@@ -1,18 +1,53 @@
-# Rest API Basics & curl 101
+# Rest API Basics
+
+Before we dive into interacting with Prisma Cloud, let's cover some basics on **REST APIs, JSON,** and **curl**.  If you are already familiar with these, then jump straight to the next lab.  If not, make sure you understand these concepts first, as they are foundational knowledge you need.
 
 TODO: Build Table of Contents here
 
 ## What is a REST API?
 
-TODO: Add info here.
+An **API** is an application programming interface. It is a set of rules that allow programs to talk to each other. The developer creates the API on the server and allows the client to talk to it.
 
+**REST** determines how the API looks like. It stands for **“Representational State Transfer”**. It is a set of rules that developers follow when they create their API. One of these rules states that you should be able to get a piece of data (called a resource) when you link to a specific URL.
 
+Each URL is called a **request** while the data sent back to you is called a **response**.
+
+### The Request
+
+A request is made up of four things:
+
+1. The endpoint
+2. The method
+3. The headers
+4. The data (or body)
+   
+The **endpoint** (or route) is the url you request for such as:
+
+```
+https://api.github.com/users/jjchavanne
+```
+
+### The Method
+
+The method is the type of request you send to the server. You can choose from these five types below:
+
+- GET - used to get a resource from a server.
+- POST - used to create a new resource on a server.
+- PUT - used to update a resource on a server. 
+- PATCH - also used to update a resource on a server. 
+- DELETE - used to delete a resource from a server. 
+   
+### The Headers
+
+Headers are used to provide information to both the client and server. It can be used for many purposes, such as authentication and providing information about the body content. 
+
+### The Data 
+
+The data (sometimes called “body” or “message”) contains information you want to be sent to the server. This option is only used with **POST, PUT, PATCH** or **DELETE** requests.
 
 ## What is curl?
 
-Before we dive into interacting with Prisma Cloud, let's cover some basics on curl
-
-**curl** is a tool for transfering data from or to a server. It supports many protocols.  Most importantly for us, HTTP & HTTPS. The command is designed to work without user interaction.
+**curl** (or sometimes seen as **cURL**), is a tool for transfering data from or to a server. It supports many protocols.  Most importantly for us, HTTP & HTTPS. The command is designed to work without user interaction.
 
 Run the curl command on your github profile:
 > **Example:**
@@ -33,10 +68,15 @@ curl https://api.github.com/users/jjchavanne
   ...
 }
 ```
+  
+The data we got back is JSON.
+
+#### What is JSON?
+JSON (JavaScript Object Notation) is a common format for sending and receiving data through a REST API.
+
+Now, back to our example.  If you paste the same API URL (without 'curl ') into a browser window you will get the same results.
    
-If you paste the same API URL (without 'curl ') into a browser window you will get the same results.
-   
-Now try to hit your Prisma Cloud API 
+Next, try to hit your Prisma Cloud API 
 > **Example:**
 ```
 curl 	https://api.prismacloud.io
@@ -82,12 +122,16 @@ This does not apply to FTP upload as that operation does not spit out any respon
 
 If you prefer a progress "bar" instead of the regular meter, *-#, --progress-bar* is your friend. You can also disable the progress meter completely with the **-s, --silent** option.
 
-That is all for now about curl.  If you so desire see [curl tutorial](https://curl.se/docs/manual.html) to learn more about using curl.
+## Learn More and other references
 
+That is all for now.  If you are intersted learning more also see:
+- [curl tutorial](https://curl.se/docs/manual.html) to learn more about using curl.
+- [ReqBin](https://reqbin.com/) - online API testing tool (super handy and a great way to learn and do testing).
+- [Understanding and Using REST APIs](https://www.smashingmagazine.com/2018/01/understanding-using-rest-api/) - where I sourced some of the info for this tutorial.  Excellent writeup.  Visit to read the entire article where there is some additional info on **basic authentication, HTTP Status Codes and Error Messages,** and **API Versions**.
 
 ## The End
 
-**Congrats!**. You learned about REST APIs, how to use curl and some of its command options!   
+**Congrats!**. You learned about **REST APIs, JSON** (standard data format used in REST APIs), how to use **curl** and some of its command options!   
    
-Move on to the next lab to learn about authentication and interacting with Prisma Cloud APIs!
+Move on to the next lab to learn about using authentication in your requests to start interacting with the Prisma Cloud REST APIs!
 
