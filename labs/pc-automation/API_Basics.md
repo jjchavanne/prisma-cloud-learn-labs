@@ -46,9 +46,9 @@ You should receive a 404 Not Found error.  This is expected.  Why?
 
 Unlike your Github user profile that is available to the public, the Prisma Cloud tenants are private.  They require authentication (we'll dive into that in the next lab!).
    
-###  cURL Command Options
+###  curl Command Options
 
-Info in this section is all taken directly from the [cURL MAN pages](https://curl.se/docs/manpage.html) (Manual).
+Info in this section is all taken directly from the [curl MAN pages](https://curl.se/docs/manpage.html) (Manual).
 
 #### Command Options Explained
 
@@ -63,12 +63,11 @@ Short version options that don't need any additional values can be used immediat
 | **Option** | **Description** |
 | ------------------------ | -------------- | 
 | **-X** or **--request** | Specifies a custom request method to use when communicating with the HTTP server. |
+| **--url** | Specify a URL to fetch. This option is mostly handy when you want to specify URL(s) in a config file. |
 | **-d** or **--data** | Sends data in a POST request to the HTTP server, same as submitting data in a web form. |
-| 
+| **-H** or **--header** | Extra header to include in the request when sending HTTP to a server. |
 
-
-
-Continue to explore the MAN pages for lots more detail and master ever command option there is.... or not.... 
+Continue to explore the MAN pages for lots more detail and master ever command option there is.... or not (there's only over 200 hunderd or so)....   
 
 
 ### Progress Meter
@@ -77,8 +76,18 @@ curl normally displays a progress meter during operations, indicating the amount
 
 curl displays this data to the terminal by default, so if you invoke curl to do an operation and it is about to write data to the terminal, it disables the progress meter as otherwise it would mess up the output mixing progress meter and response data.
 
-If you want a progress meter for HTTP POST or PUT requests, you need to redirect the response output to a file, using shell redirect (>), -o, --output or similar.
+If you want a progress meter for HTTP POST or PUT requests, you need to redirect the response output to a file, using shell redirect (>), **-o, --output** or similar.
 
 This does not apply to FTP upload as that operation does not spit out any response data to the terminal.
 
-If you prefer a progress "bar" instead of the regular meter, -#, --progre
+If you prefer a progress "bar" instead of the regular meter, *-#, --progress-bar* is your friend. You can also disable the progress meter completely with the **-s, --silent** option.
+
+That is all for now about curl.  If you so desire see [curl tutorial](https://curl.se/docs/manual.html) to learn more about using curl.
+
+
+## The End
+
+**Congrats!**. You learned about REST APIs, how to use curl and some of its command options!   
+   
+Move on to the next lab to learn about authentication and interacting with Prisma Cloud APIs!
+
