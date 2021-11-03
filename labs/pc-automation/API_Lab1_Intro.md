@@ -11,78 +11,36 @@ This tutorial will use **cURL**.  It is the simplest and fastest way to interact
 
 
 ## Prerequisites:
+- basic understanding of cURL and it's main parameters.  Review the [API Basics tutorial](API_Basics.md)
 - access to a Prisma Cloud tenant
 - terminal shell (i.e. bash or zsh)
 - install [jq](https://stedolan.github.io/jq/download/)
 - familiarity with a [text editor or IDE](../../tools/Text_Editors.md) (i.e. nano, vim, VSCode)
-- Obtain Values for the following keys:
+- obtain Values for the following environment variables:
 
-| **Key** | **Value** | **How To Obtain** |
+| **Env Variable** | **Value** | **How To Obtain** |
 | ------------------ | --------------------- | ---------------- |
 | **PC_API_URL** | **'https://<YOUR_TENANT_API_URL>'** | *Visit [Prisma PAN API Docs](https://prisma.pan.dev/api/cloud/api-urls) to map your tenant URL to the tenant API URL.* |
 | **PC_ACCESS_KEY** | **'<YOUR_ACCESS_KEY>'** | *Log into Prisma Cloud and go to Settings > Access Keys* |
 | **PC_SECRET_KEY** | **'<YOUR_SECRET_KEY>'** | *Obtain your Secret Key at time of Access Key creation.* |
+   
+   
+## 1 - Setup 
 
-## 1 - Setup Secrets Management 
+Before proceeding, suggest to quicky review [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
+) for being mindful in advance for use in production.  
 
-I'm choosing to Create Secret and store Access Key info in Vault in Dev mode.
-   
-Feel free to choose another Secrets Management option.  
-TODO: Refer to other options.
-   
-   
-*NOTE: Using Vault in **'Dev'** mode is NOT recommended for production use, however much simplier to learn and use for the purposes of this tutorial.  See [Deploy Vault Tutorial](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started) and [Seal/Unseal Concepts](https://www.vaultproject.io/docs/concepts/seal) to learn how to use Vault for a production environment.*
-   
+Export your environment variables with your values.
 
-Using dev mode, start the dev server:
 ```
-vault server -dev
-```
-
-Before proceeding, suggest to review and consider [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
-)
-   
-Launch a new terminal window and Copy the `export VAULT_ADDR ...` command from the first terminal output and run in the second terminal window.  
-   
-> **Example:**
-```
-export VAULT_ADDR='http://127.0.0.1:8200'
-```
-
-Save the unseal key somewhere. Don't worry about how to save this securely. For now, just save it anywhere.
-
-Set the `VAULT_TOKEN` environment variable value to the generated **Root Token** value displayed in the terminal output.   
-   
-> **Example:**
-```
-export VAULT_TOKEN='s.XmpNPoi9sRhYtdKHaQhkHP6x'
-```
-   
-To verify the server is running:
-```
-vault status
-```
-
-Using your Prisma Cloud key/values, create the secret with the three pieces of key/value data (replacing the '\<TEXT>' of each value with your values):
-In your terminal:
-
-```bash
-vault kv put secret/prisma_enterprise_env \
-             PC_API_URL='https://<YOUR_TENANT_API_URL>' \
-             PC_ACCESS_KEY='<YOUR_ACCESS_KEY>' \
-             PC_SECRET_KEY='<YOUR_SECRET_KEY>'
-```
-   
-With jq installed, verify retreiving your secret data:
-```
-vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL
-vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY
-vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY
+export PC_API_URL="https://<YOUR_TENANT_API_URL>"
+export PC_ACCESS_KEY="<YOUR_ACCESS_KEY>"
+export PC_SECRET_KEY="<YOUR_SECRET_KEY>"
 ```
 
 ## 2 - Create Prisma Cloud API Script
 
-First, create a new project directory and cd into it:
+Create a new project directory and cd into it:
 ```
 mkdir prisma_api_dir
 cd prisma_api_dir/
@@ -100,19 +58,7 @@ The first line we'll type in our script is a she-bang. This ensures our script i
 #!/bin/bash
 ```
 
-Next we'll define our variables inside our script.
-   
-Note, we are using mixed_CASE here so as not to be confused with environment or bash variables (typically UPPERCASE) plus these variables relate to the vault key names with the same name and we want to differentiate these variable names by using mixed_CASE.  For more explanation see this [stakoverflow article](https://stackoverflow.com/questions/673055/correct-bash-and-shell-script-variable-capitalization) 
-
-```bash
-#!/bin/bash
-
-PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
-```
-
-The last variable we need to define for now is the payload variable.
+Next, we need to define a shell variable for the authentication payload.
 
 There's multiple ways to do this and pros and cons to each. 
 
