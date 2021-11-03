@@ -19,9 +19,9 @@ This tutorial will use **cURL**.  It is the simplest and fastest way to interact
 
 | **Key** | **Value** | **How To Obtain** |
 | ------------------ | --------------------- | ---------------- |
-| **pcee_api_url** | **'https://<YOUR_TENANT_API_URL>'** | *Visit [Prisma PAN API Docs](https://prisma.pan.dev/api/cloud/api-urls) to map your tenant URL to the tenant API URL.* |
-| **pcee_accesskey** | **'<YOUR_ACCESS_KEY>'** | *Log into Prisma Cloud and go to Settings > Access Keys* |
-| **pcee_secretkey** | **'<YOUR_SECRET_KEY>'** | *Obtain your Secret Key at time of Access Key creation.* |
+| **PC_API_URL** | **'https://<YOUR_TENANT_API_URL>'** | *Visit [Prisma PAN API Docs](https://prisma.pan.dev/api/cloud/api-urls) to map your tenant URL to the tenant API URL.* |
+| **PC_ACCESS_KEY** | **'<YOUR_ACCESS_KEY>'** | *Log into Prisma Cloud and go to Settings > Access Keys* |
+| **PC_SECRET_KEY** | **'<YOUR_SECRET_KEY>'** | *Obtain your Secret Key at time of Access Key creation.* |
 
 ## 1 - Setup Secrets Management 
 
@@ -68,16 +68,16 @@ In your terminal:
 
 ```bash
 vault kv put secret/prisma_enterprise_env \
-             pcee_api_url='https://<YOUR_TENANT_API_URL>' \
-             pcee_accesskey='<YOUR_ACCESS_KEY>' \
-             pcee_secretkey='<YOUR_SECRET_KEY>'
+             PC_API_URL='https://<YOUR_TENANT_API_URL>' \
+             PC_ACCESS_KEY='<YOUR_ACCESS_KEY>' \
+             PC_SECRET_KEY='<YOUR_SECRET_KEY>'
 ```
    
 With jq installed, verify retreiving your secret data:
 ```
-vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url
-vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey
-vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey
+vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL
+vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY
+vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY
 ```
 
 ## 2 - Create Prisma Cloud API Script
@@ -107,9 +107,9 @@ Note, we are using mixed_CASE here so as not to be confused with environment or 
 ```bash
 #!/bin/bash
 
-pcee_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey)
+PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
+pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
+pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
 ```
 
 The last variable we need to define for now is the payload variable.
@@ -138,9 +138,9 @@ Here's how we'll define the last variable for our script.
 ```bash 
 #!/bin/bash
 
-pcee_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey)
+PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
+pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
+pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
 
 pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
 ```
@@ -156,9 +156,9 @@ _Note: the `#` comments out the line in bash. I'll use that indicate what I'm do
 ```bash
 #!/bin/bash
 
-pcee_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey)
+PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
+pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
+pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
 
 pcee_AUTH_PAYLOAD="{\"password\": \"${pcee_SECRET_KEY}\", \"username\": \"${pcee_ACCESS_KEY}\"}"
 
@@ -169,7 +169,7 @@ curl --request POST \
   --header 'content-type: application/json; charset=UTF-8'
 ```
 
-We'll need to change the request sample so it works with our script. First, we'll clean up the formatting and then replace the url with our `$pcee_API_URL` variable + the api endpoint `/login`. 
+We'll need to change the request sample so it works with our script. First, we'll clean up the formatting and then replace the url with our `$PC_API_URL` variable + the api endpoint `/login`. 
 
 
 _Note: the `\` is used to break the line for readability...but ultimately isn't necessary. When using a `\` it's important to be mindful of extra spaces after the `\`_
@@ -196,16 +196,16 @@ Here's what your script should look like after we add the variables in and clean
 ```bash
 #!/bin/bash
 
-pcee_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey)
+PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
+pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
+pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
 
 pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
 
 # HERE'S WHAT WE COPIED FROM THE DOCUMENTATION PAGE:
 
 curl --request POST \
-     --url "${pcee_API_URL}/login" \
+     --url "${PC_API_URL}/login" \
      --header 'content-type: application/json; charset=UTF-8' \
      --data "${pcee_AUTH_PAYLOAD}"
 ```
@@ -266,16 +266,16 @@ Finally, we'll add the `echo "${pcee_AUTH_TOKEN}"` to the end of our script so w
 ```bash
 #!/bin/bash
 
-pcee_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey)
+PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
+pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
+pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
 
 pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
 
 # HERE'S WHAT WE COPIED FROM THE DOCUMENTATION PAGE:
 
 pcee_AUTH_TOKEN=$(curl --request POST \
-                       --url "${pcee_API_URL}/login" \
+                       --url "${PC_API_URL}/login" \
                        --header 'content-type: application/json; charset=UTF-8' \
                        --data "${pcee_AUTH_PAYLOAD}" | jq -r '.token')
 
@@ -305,15 +305,15 @@ Once edited, our script should now look like the code block below:
 ```bash
 #!/bin/bash
 
-pcee_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_api_url)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_accesskey)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.pcee_secretkey)
+PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
+pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
+pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
 
 pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
 
 # NOTICE THE -s I've added to this call. This quiets the command
 pcee_AUTH_TOKEN=$(curl -s --request POST \
-                          --url "${pcee_API_URL}/login" \
+                          --url "${PC_API_URL}/login" \
                           --header 'content-type: application/json; charset=UTF-8' \
                           --data "${pcee_AUTH_PAYLOAD}" | jq -r '.token')
                           
