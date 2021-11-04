@@ -2,16 +2,16 @@
    
 **Learn how to get up and running with the Prisma Cloud REST APIs**
 
-This tutorial will use **cURL**.  It is the simplest and fastest way to interact with REST APIs.  
+This tutorial will use **curl**.  It's simple, well known, and an easy way to interact with REST APIs.  
 
 ## Objectives:
 1. Utilize Environment Variables to store and retreive Access Keys.
-2. Create a bash script using cURL to automate requests with the Prisma Cloud REST API.
+2. Create a bash script using curl to automate requests with the Prisma Cloud REST API.
 3. Utilize jq for processing and filtering JSON data retreived from Prisma Cloud.
 
 
 ## Prerequisites:
-- basic understanding of cURL and it's main parameters.  Review the [API Basics tutorial](API_Basics.md)
+- basic understanding of REST APIs, JSON, curl and it's main parameters.  Review the [API Basics tutorial](API_Basics.md)
 - access to a Prisma Cloud tenant
 - terminal shell (i.e. bash or zsh)
 - install [jq](https://stedolan.github.io/jq/download/)
@@ -25,20 +25,40 @@ This tutorial will use **cURL**.  It is the simplest and fastest way to interact
 | **PC_SECRET_KEY** | **'<YOUR_SECRET_KEY>'** | *Obtain your Secret Key at time of Access Key creation.* |
    
    
-## 1 - Setup 
+## 1 - Working with the Prisma Cloud APIs 
+
+We first will determine what we need to login and authenticate with the Prisma Cloud APIs.  For the purposes of this lab tutorial, we will primarily focus on interacting with the CSPM API.  The learning however can applied to both Prisma Cloud APIs (or any other API that uses authentication for that matter).
+
+Since we will focus on the CSPM API, let's refer directly to the [Prisma Cloud Login API Overview Page](https://prisma.pan.dev/api/cloud/cspm/login) as we go through section.   
+
+You will see that we need two items:
+1. An active Access Key with a Secret Key (as mentioned in the prerequistes).
+2. Using the Access Key to obtain a JSON Web Token (JWT).
+
+We will use curl with the POST /login request to obtain a JWT.
+
+If you went through the API Basics Lab in this folder, then you may recall there are four(4) parts to an API request.  Let's map them to what we need:   
+   
+| API request part | curl option & our content |
+| ------------ | ---------- |
+| The endpoint | --url https://<YOUR_TENANT_API_URL>/login |
+| The method | --request POST |
+| The headers | --header 'content-type: application/json; charset=UTF-8' |
+| The data (or body) | --data "`{"password": "string", "username": "string"}`" |
+   
+
+## 2 - Create Prisma Cloud API Script
 
 Before proceeding, suggest to quicky review [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
 ) for being mindful in advance for use in production.  
 
-Export your environment variables with your values.
+Open your terminal window and export your environment variables with your values.
 
 ```
 export PC_API_URL="https://<YOUR_TENANT_API_URL>"
 export PC_ACCESS_KEY="<YOUR_ACCESS_KEY>"
 export PC_SECRET_KEY="<YOUR_SECRET_KEY>"
 ```
-
-## 2 - Create Prisma Cloud API Script
 
 Create a new project directory and cd into it:
 ```
