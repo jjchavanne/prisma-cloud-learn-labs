@@ -41,7 +41,7 @@ If you went through the API Basics Lab in this folder, then you may recall there
    
 On the Right-Hand side of the [POST /login](https://prisma.pan.dev/api/cloud/cspm/login#operation/app-login) API section, under **Request Samples**, Click **Shell + Curl**
 
-You should see this (I've just added my comments to each line on the right to indicate the relevant API request part):
+You should see this (I've also added my comments to each line on the right to indicate the relevant API request part):
 ```
 curl --request POST \                                       # The Method
   --url https://api.prismacloud.io/login \                  # The Endpoint
@@ -49,7 +49,7 @@ curl --request POST \                                       # The Method
 ```
 
 Under the same **Request Samples** area on the API doc page, now click the **Payload** section.   
-All of this is `The Data (or body)`:
+All of the below is `The Data (or body)`:
 ```
 {
   "customerName": "string",
@@ -61,7 +61,7 @@ All of this is `The Data (or body)`:
    
 Great, we have the four parts we need for our API request!   
    
-Next, we will create a small bash script using environment varaibles to inject our values into the request.
+Next, we will create a small bash script using environment varaibles to inject our values into the request, **most importantly to keep sensitive clear text data out of our script!**
 
 ## 2 - Create Prisma Cloud API Script
 
@@ -69,8 +69,8 @@ Before proceeding, suggest to quicky review [Keeping your secrets out of your Ba
 ) for being mindful in advance for use in production.  
 
 Open your terminal window and export your environment variables.   
+   
 Replace each `<TEXT>` section below with your values.
-
 ```
 export PC_API_URL="https://<YOUR_TENANT_API_URL>"
 export PC_ACCESS_KEY="<YOUR_ACCESS_KEY>"
@@ -99,16 +99,20 @@ Next, we need to define a shell variable for the authentication payload.  Why?  
 
 There's multiple ways to do this and pros and cons to each. 
 
-For simplicity's sake, I'm going to create this variable in the script using a multi-line string, representing the JSON data.  
+For simplicity's sake, I'm going to create this shell variable in the script using a [HereDoc](https://linuxize.com/post/bash-heredoc/) in order to pass our multi-line block of JSON data into the variable.   
 
-Here's our json payload we'll need to send with our first api call.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
+So, we will take our json payload below.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
 ```json
 {
   "password": "string",
   "username": "string"
 }
 ```
-Here is how we will write that in our script:
+And write that in our script using a HereDoc with:
+- the `cat` command
+- the use of `<<` as our redirection operator
+- the text `JSONDATA` as our delimiter (the text can be anything as long you match it at beginning and end)
+- and surrounding the entire thing with `()` to pass it all into our new shell variable `pc_auth_payload`:
 ```
 pc_auth_payload=$(cat <<JSONDATA
 {
@@ -119,10 +123,10 @@ JSONDATA
 )
 ```
 
-
-_TIP: I use vim as my editor of choice. A simple shortcut is to leverage the stream editor capabilities of vim to do this quickly. If you're just learning how to work with the bash shell...stick with nano for now_
-
-
+If you don't fully understand what I did here, have a read through one of these articles:
+- https://ostechnix.com/bash-heredoc-tutorial/
+- https://linuxize.com/post/bash-heredoc/
+   
 Now we're ready to make our first api call using curl. 
 
 Let's go to the [Prisma Pan API Documentation Page](https://prisma.pan.dev/api/cloud/cspm/login#operation/app-login) to retrieve the api endpoint we'll need. In this case, the api endpoint we want is `/login`.
