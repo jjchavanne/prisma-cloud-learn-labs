@@ -29,7 +29,7 @@ This tutorial will use **curl**.  It's simple, well known, and an easy way to in
 
 We first will determine what we need to login and authenticate with the Prisma Cloud APIs.  For the purposes of this lab tutorial, we will primarily focus on interacting with the CSPM API.  The learning however can applied to both Prisma Cloud APIs (or any other API that uses authentication for that matter).
 
-Since we will focus on the CSPM API, let's refer directly to the [Prisma Cloud Login API Overview Page](https://prisma.pan.dev/api/cloud/cspm/login) as we go through section.   
+Since we will focus on the CSPM API, let's refer directly to the [Prisma Cloud Login API Overview Page](https://prisma.pan.dev/api/cloud/cspm/login) as we go through this section.   
 
 You will see that we need two items:
 1. An active Access Key with a Secret Key (as mentioned in the prerequistes).
@@ -37,22 +37,39 @@ You will see that we need two items:
 
 We will use curl with the POST /login request to obtain a JWT.
 
-If you went through the API Basics Lab in this folder, then you may recall there are four(4) parts to an API request.  Let's map them to what we need:   
+If you went through the API Basics Lab in this folder, then you may recall there are four(4) parts to an API request.  Let's map them to what we need.   
    
-| API request part | curl option & our content |
-| ------------ | ---------- |
-| The endpoint | --url https://<YOUR_TENANT_API_URL>/login |
-| The method | --request POST |
-| The headers | --header 'content-type: application/json; charset=UTF-8' |
-| The data (or body) | --data "`{"password": "string", "username": "string"}`" |
+On the Right-Hand side of the [POST /login](https://prisma.pan.dev/api/cloud/cspm/login#operation/app-login) API section, under **Request Samples**, Click **Shell + Curl**
+
+You should see this (I've just added my comments to each line on the right to indicate the relevant API request part):
+```
+curl --request POST \                                       # The Method
+  --url https://api.prismacloud.io/login \                  # The Endpoint
+  --header 'content-type: application/json; charset=UTF-8   # The Header
+```
+
+Under the same **Request Samples** area on the API doc page, now click the **Payload** section.   
+All of this is `The Data (or body)`:
+```
+{
+  "customerName": "string",
+  "password": "string",
+  "prismaId": "string",
+  "username": "string"
+}
+```
    
+Great, we have the four parts we need for our API request!   
+   
+Next, we will create a small bash script using environment varaibles to inject our values into the request.
 
 ## 2 - Create Prisma Cloud API Script
 
 Before proceeding, suggest to quicky review [Keeping your secrets out of your Bash History](../secrets-mgmt/Keeping_Secrets_Out_Of_Bash_History.md
 ) for being mindful in advance for use in production.  
 
-Open your terminal window and export your environment variables with your values.
+Open your terminal window and export your environment variables.   
+Replace each `<TEXT>` section below with your values.
 
 ```
 export PC_API_URL="https://<YOUR_TENANT_API_URL>"
@@ -78,38 +95,33 @@ The first line we'll type in our script is a she-bang. This ensures our script i
 #!/bin/bash
 ```
 
-Next, we need to define a shell variable for the authentication payload.
+Next, we need to define a shell variable for the authentication payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
 
 There's multiple ways to do this and pros and cons to each. 
 
-For simplicity's sake, I'm going to create this variable in the script so you only have one file to worry about. The downsides to this method are: 
+For simplicity's sake, I'm going to create this variable in the script using a multi-line string, representing the JSON data.  
 
-1. the script is less readable and
-2. you have to be more sensitive to the formatting
-
-Here's our json payload we'll need to send with our first api call:
+Here's our json payload we'll need to send with our first api call.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
 ```json
 {
   "password": "string",
   "username": "string"
 }
 ```
+Here is how we will write that in our script:
+```
+pc_auth_payload=$(cat <<JSONDATA
+{
+  "password":"$PC_SECRET_KEY", 
+  "username":"$PC_ACCESS_KEY"
+}
+JSONDATA
+)
+```
 
-The problem is, bash won't interpret that correctly if we assigned the raw json to a variable. To get around this we'll need to reformat the raw json so it's it's interpreted correctly. 
 
 _TIP: I use vim as my editor of choice. A simple shortcut is to leverage the stream editor capabilities of vim to do this quickly. If you're just learning how to work with the bash shell...stick with nano for now_
 
-Here's how we'll define the last variable for our script. 
-
-```bash 
-#!/bin/bash
-
-PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
-
-pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
-```
 
 Now we're ready to make our first api call using curl. 
 
