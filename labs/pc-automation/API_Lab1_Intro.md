@@ -95,13 +95,32 @@ The first line we'll type in our script is a she-bang. This ensures our script i
 #!/bin/bash
 ```
 
-Next, we need to define a shell variable for the authentication payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
+Next, we want to insert our `PC_API_URL` environment variable into our endpoint portion of the API request.
+Replace this:
+```
+curl --request POST \
+     --url https://api.prismacloud.io/login \
+     --header 'content-type: application/json; charset=UTF-8
+```
+with this:
+```
+curl --request POST \
+     --url "${PC_API_URL}/login" \
+     --header 'content-type: application/json; charset=UTF-8
+```
+
+Next, we need to define a shell variable for the authentication (data) payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
 
 There's multiple ways to do this and pros and cons to each. 
 
-For simplicity's sake, I'm going to create this shell variable in the script using a [HereDoc](https://linuxize.com/post/bash-heredoc/) in order to pass our multi-line block of JSON data into the variable.   
+One way to do this, is by escaping all the quotes inside the json block.  This however can cause headaches for larger blocks of data.  
+```
+pc_auth_payload="{\"password\": \"${PC_SECRET_KEY}\", \"username\": \"${PC_ACCESS_KEY}\"}"
+```
 
-So, we will take our json payload below.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
+Instead and for simplicity's sake, I'm going to create this shell variable in the script using a [HereDoc](https://linuxize.com/post/bash-heredoc/) in order to pass our multi-line block of JSON data into the variable.   
+
+To do this, we will take our json payload below.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
 ```json
 {
   "password": "string",
@@ -127,29 +146,39 @@ If you don't fully understand what I did here, have a read through one of these 
 - https://ostechnix.com/bash-heredoc-tutorial/
 - https://linuxize.com/post/bash-heredoc/
    
+The beautiful thing about this, is we now know how to take any block of JSON data (no matter how long and complex) and stick it right in a HereDoc!  As you work with more complex API endpoints, you will certainly grow to appreciate this.
+
+The last thing we need to do is add the `--data` line to our curl request utilizing our new shell variable `pc_auth_payload`.  
+The last line of the curl request therefore will look like this:
+```
+--data "${pc_auth_payload}"
+```
+
 Now we're ready to make our first api call using curl. 
 
-Let's go to the [Prisma Pan API Documentation Page](https://prisma.pan.dev/api/cloud/cspm/login#operation/app-login) to retrieve the api endpoint we'll need. In this case, the api endpoint we want is `/login`.
-
-We'll copy out the request sample from the `Shell + Curl` tab on the right-hand of the documentation page and paste it into our script. 
-
-_Note: the `#` comments out the line in bash. I'll use that indicate what I'm doing_
+Let's put everyhting together in our script.  It should look like this:
 
 ```bash
 #!/bin/bash
 
-PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
+# Pass JSON data with our environment variables directly as a multi-line string to a shell variable.
+pc_auth_payload=$(cat <<JSONDATA
+{
+  "password":"$PC_SECRET_KEY", 
+  "username":"$PC_ACCESS_KEY"
+}
+JSONDATA
+)
 
-pcee_AUTH_PAYLOAD="{\"password\": \"${pcee_SECRET_KEY}\", \"username\": \"${pcee_ACCESS_KEY}\"}"
-
-# HERE'S WHAT WE COPIED FROM THE DOCUMENTATION PAGE:
-
+# Authenticate to Prisma Cloud to fetch token and filter out only the JSON token data.  Using '-s' to quiet curl command.
 curl --request POST \
-  --url https://api.prismacloud.io/login \
-  --header 'content-type: application/json; charset=UTF-8'
+     --url "${PC_API_URL}/login" \
+     --header 'content-type: application/json; charset=UTF-8' \
+     --data "${pc_auth_payload}"
 ```
+
+_Note: the `#` comments out the line in bash. I'll use that to indicate what I'm doing_
+
 
 We'll need to change the request sample so it works with our script. First, we'll clean up the formatting and then replace the url with our `$PC_API_URL` variable + the api endpoint `/login`. 
 
