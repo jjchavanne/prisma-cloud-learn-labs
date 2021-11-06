@@ -33,7 +33,7 @@ Since we will focus on the CSPM API, let's refer directly to the [Prisma Cloud L
 
 You will see that we need two items:
 1. An active Access Key with a Secret Key (as mentioned in the prerequistes).
-2. Using the Access Key to obtain a JSON Web Token (JWT).
+2. Using the Access Key to obtain a JSON Web Token (JWT; pronounced: JOT).
 
 We will use curl with the POST /login request to obtain a JWT.
 
@@ -47,8 +47,25 @@ curl --request POST \                                       # The Method
   --url https://api.prismacloud.io/login \                  # The Endpoint
   --header 'content-type: application/json; charset=UTF-8   # The Header
 ```
+   
+_Note: each `\` at the end of the lines are used to break the line for readability...but ultimately isn't necessary. When using a `\` it's important to be mindful of extra spaces after the `\`_
+   
+Many people who are first learning bash have issues with the spacing and formatting because they're not thinking about how the code is interpreted. Example:
 
-Under the same **Request Samples** area on the API doc page, now click the **Payload** section.   
+```bash
+curl --request POST \
+  --url https://api.prismacloud.io/login \
+  --header 'content-type: application/json; charset=UTF-8'
+```
+
+Is the same as:
+```bash
+curl --request POST --url https://api.prismacloud.io/login --header 'content-type: application/json; charset=UTF-8'
+```
+
+_TIP: Sometimes it's easier to make it all one line and then add the `\` in as needed. This ensure's you don't have weird spacing issues when scripting._
+   
+Under the same **Request Samples** area on the Prisma Cloud API doc page, now click the **Payload** section.   
 All of the below is `The Data (or body)`:
 ```
 {
@@ -94,8 +111,8 @@ The first line we'll type in our script is a she-bang. This ensures our script i
 ```bash
 #!/bin/bash
 ```
-
-Next, we want to insert our `PC_API_URL` environment variable into our endpoint portion of the API request.
+ 
+Next, we want to replace the url with our `$PC_API_URL` environment variable + the api endpoint `/login` of the API request.   
 Replace this:
 ```
 curl --request POST \
@@ -109,7 +126,7 @@ curl --request POST \
      --header 'content-type: application/json; charset=UTF-8
 ```
 
-Next, we need to define a shell variable for the authentication (data) payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
+Next, we need to define a single shell variable that includes our `PC_ACCESS_KEY` & `PC_SECRET_KEY` varaibles for the authentication (data) payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
 
 There's multiple ways to do this and pros and cons to each. 
 
@@ -123,15 +140,15 @@ Instead and for simplicity's sake, I'm going to create this shell variable in th
 To do this, we will take our json payload below.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
 ```json
 {
-  "password": "string",
-  "username": "string"
+  "password":"$PC_SECRET_KEY", 
+  "username":"$PC_ACCESS_KEY"
 }
 ```
 And write that in our script using a HereDoc with:
 - the `cat` command
 - the use of `<<` as our redirection operator
 - the text `JSONDATA` as our delimiter (the text can be anything as long you match it at beginning and end)
-- and surrounding the entire thing with `()` to pass it all into our new shell variable `pc_auth_payload`:
+- and surrounding the entire thing with `$()` to pass it all into our new shell variable `pc_auth_payload`:
 ```
 pc_auth_payload=$(cat <<JSONDATA
 {
@@ -156,8 +173,9 @@ The last line of the curl request therefore will look like this:
 
 Now we're ready to make our first api call using curl. 
 
-Let's put everyhting together in our script.  It should look like this:
-
+Let's put everyhting together in our script.  _Note: I've also added some comments.  The `#` comments out the line in bash. I'll use that to indicate what I'm doing_
+   
+Update the script to look like this:
 ```bash
 #!/bin/bash
 
@@ -170,62 +188,18 @@ pc_auth_payload=$(cat <<JSONDATA
 JSONDATA
 )
 
-# Authenticate to Prisma Cloud to fetch token and filter out only the JSON token data.  Using '-s' to quiet curl command.
+# Authenticate to Prisma Cloud to fetch token and filter out only the JSON token data.
 curl --request POST \
      --url "${PC_API_URL}/login" \
      --header 'content-type: application/json; charset=UTF-8' \
      --data "${pc_auth_payload}"
 ```
 
-_Note: the `#` comments out the line in bash. I'll use that to indicate what I'm doing_
-
-
-We'll need to change the request sample so it works with our script. First, we'll clean up the formatting and then replace the url with our `$PC_API_URL` variable + the api endpoint `/login`. 
-
-
-_Note: the `\` is used to break the line for readability...but ultimately isn't necessary. When using a `\` it's important to be mindful of extra spaces after the `\`_
-
-Many people who are first learning bash have issues with the spacing and formatting because they're not thinking about how the code is interpreted. Example:
-
-```bash
-curl --request POST \
-  --url https://api.prismacloud.io/login \
-  --header 'content-type: application/json; charset=UTF-8'
-```
-
-Is the same as:
-```bash
-curl --request POST --url https://api.prismacloud.io/login --header 'content-type: application/json; charset=UTF-8'
-```
-
-_TIP: Sometimes it's easier to make it all one line and then add the `\` in as needed. This ensure's you don't have weird spacing issues when scripting._
-
-The last modification we'll need to add is the request body or data from our json payload. `--data ${pcee_AUTH_PAYLOAD}`
-
-Here's what your script should look like after we add the variables in and clean up the formatting:
-
-```bash
-#!/bin/bash
-
-PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
-
-pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
-
-# HERE'S WHAT WE COPIED FROM THE DOCUMENTATION PAGE:
-
-curl --request POST \
-     --url "${PC_API_URL}/login" \
-     --header 'content-type: application/json; charset=UTF-8' \
-     --data "${pcee_AUTH_PAYLOAD}"
-```
-
 ## 3 - Save your script and execute it!
 
-In our scripts current form we should be able to invoke it and retrieve the JWT (JSON Web Token; pronouced: JOT). 
+In our scripts current form we should be able to invoke it and retrieve the JWT. 
 
-Let's test it out! Hit `ctrl + x` and then `y` to save your script. 
+Let's test it out!  Save your script. 
 
 Execute it from the terminal by entering: `bash prisma_api_test.sh`. You should get a response that looks like this:
 
@@ -239,7 +213,7 @@ Uh-oh...well that's pretty ugly and also unusable to pass downstream for more ap
 bash prisma_api_test.sh | jq
 ```
 
-Now our response will look like this:
+Now our response will look something like this:
 
 ```json
 {
@@ -256,7 +230,7 @@ Now our response will look like this:
 
 ## 4 - Using JQ to filter and parse the JSON response
 
-Okay...so now it's easier to look at. Let use jq to filter out the token which is what we'll need for our next api call. To do that, we will first need to break down what we want. Ideally, we want the `"value"` of the `"token"` key. To isolate the `"value (or <SUPER_LONG_STRING>)"` of the token key we'll modify our command to: 
+Okay...so now it's easier to look at. Let's use jq to filter out the token which is what we'll need for our next api call. To do that, we will first need to break down what we want. Ideally, we want the `"value"` of the `"token"` key. To isolate the `"value (or <SUPER_LONG_STRING>)"` of the token key we'll modify our command to: 
 
 ```bash
 bash prisma_api_test.sh | jq -r '.token'
@@ -264,38 +238,44 @@ bash prisma_api_test.sh | jq -r '.token'
 
 _Note: the `-r` removes the quotes._
 
-Now you have the TOKEN isolated! Perfect. Copy out the `| jq -r '.token'` from your terminal and edit your script again. We'll modify the script so it saves our first api call to another variable `$pcee_AUTH_TOKEN` which we'll then use in another api call.
+Now you have the TOKEN isolated! Perfect. Copy out the `| jq -r '.token'` from your terminal and edit your script again. We'll modify the script so it saves our first api call to another variable `$pc_auth_token` which we'll then use in another api call.
 
-So we can observe what's happening let's go ahead and `echo` the variable `$pcee_AUTH_TOKEN` at the end of our script.
+So we can observe what's happening let's go ahead and `echo` the variable `$pc_auth_token` at the end of our script.
 
-Let's re-open our script in nano: `nano prisma_api_test.sh`. 
+Re-open the script in your text editor:   
+> Example:
+```
+nano prisma_api_test.sh
+```
 
-Our goal here is to assign the response to a variable named `$pcee_AUTH_TOKEN`. To do that we'll wrap our `curl` command in `$()` and then adjust the formatting for maintainability.
+Our goal here is to assign the response to a variable named `$pc_auth_token`. To do that we'll wrap our `curl` command in `$()` and then adjust the formatting for maintainability.
 
-Finally, we'll add the `echo "${pcee_AUTH_TOKEN}"` to the end of our script so we can see that we've captured the JWT. 
+Finally, we'll add the `echo "${pc_auth_token}"` to the end of our script so we can see that we've captured the JWT. 
 
 ```bash
 #!/bin/bash
 
-PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
+# Pass JSON data with our environment variables directly as a multi-line string to a shell variable.
+pc_auth_payload=$(cat <<JSONDATA
+{
+  "password":"$PC_SECRET_KEY", 
+  "username":"$PC_ACCESS_KEY"
+}
+JSONDATA
+)
 
-pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
-
-# HERE'S WHAT WE COPIED FROM THE DOCUMENTATION PAGE:
-
-pcee_AUTH_TOKEN=$(curl --request POST \
-                       --url "${PC_API_URL}/login" \
-                       --header 'content-type: application/json; charset=UTF-8' \
-                       --data "${pcee_AUTH_PAYLOAD}" | jq -r '.token')
+# Authenticate to Prisma Cloud to fetch token and filter out only the JSON token data.  Using '-s' to quiet curl command.
+pc_auth_token=$(curl --request POST \
+                     --url "${PC_API_URL}/login" \
+                     --header 'content-type: application/json; charset=UTF-8' \
+                     --data "${pc_auth_payload}" | jq -r '.token')
 
 # Check the output
 
-echo "${pcee_AUTH_TOKEN}"
+echo "${pc_auth_token}"
 ```
 
-After your script looks like the code block above, hit `ctrl + x` then `y` on your keyboard to close and save the changes. 
+After your script looks like the code block above, save the changes and exit. 
 
 Now it's time to invoke your script again. 
 
@@ -316,20 +296,23 @@ Once edited, our script should now look like the code block below:
 ```bash
 #!/bin/bash
 
-PC_API_URL=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_API_URL)
-pcee_ACCESS_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_ACCESS_KEY)
-pcee_SECRET_KEY=$(vault kv get -format=json secret/prisma_enterprise_env | jq -r .data.data.PC_SECRET_KEY)
+# Pass JSON data with our environment variables directly as a multi-line string to a shell variable.
+pc_auth_payload=$(cat <<JSONDATA
+{
+  "password":"$PC_SECRET_KEY", 
+  "username":"$PC_ACCESS_KEY"
+}
+JSONDATA
+)
 
-pcee_AUTH_PAYLOAD="{\"password\": \"$pcee_SECRET_KEY\", \"username\": \"$pcee_ACCESS_KEY\"}"
-
-# NOTICE THE -s I've added to this call. This quiets the command
-pcee_AUTH_TOKEN=$(curl -s --request POST \
-                          --url "${PC_API_URL}/login" \
-                          --header 'content-type: application/json; charset=UTF-8' \
-                          --data "${pcee_AUTH_PAYLOAD}" | jq -r '.token')
+# Authenticate to Prisma Cloud to fetch token and filter out only the JSON token data.  Using '-s' to quiet curl command.
+pc_auth_token=$(curl -s --request POST \
+                        --url "${PC_API_URL}/login" \
+                        --header 'content-type: application/json; charset=UTF-8' \
+                        --data "${pc_auth_payload}" | jq -r '.token')
                           
 # Print the output of the Token we should have received from the Curl request above.
-echo "${pcee_AUTH_TOKEN}"                          
+echo "${pc_auth_token}"                        
 ```
 
 Save the script and run one more time.
