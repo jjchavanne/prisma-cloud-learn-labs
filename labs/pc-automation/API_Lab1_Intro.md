@@ -144,7 +144,7 @@ And write that in our script using a HereDoc with:
 - the `cat` command
 - the use of `<<` as our redirection operator
 - the text `JSONDATA` as our delimiter (the text can be anything as long you match it at beginning and end)
-- and surrounding the entire thing with `$()` to pass it all into our new shell variable `pc_auth_payload`:
+- and surrounding the entire thing with `$()` to pass it all into our new shell variable `pc_auth_payload`  _NOTE: I'm choosing to use all lowercase for variables created inside the script (different than the environment variables, where I use UPPERCASE, created outside of the script. See [here](https://stackoverflow.com/questions/673055/correct-bash-and-shell-script-variable-capitalization)_:
 ```
 pc_auth_payload=$(cat <<JSONDATA
 {
