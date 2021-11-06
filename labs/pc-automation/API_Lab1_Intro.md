@@ -2,7 +2,7 @@
    
 **Learn how to get up and running with the Prisma Cloud REST APIs**
 
-This tutorial will use **curl**.  It's simple, well known, and an easy way to interact with REST APIs.  
+This tutorial will use [curl](https://curl.se/).  It's simple, well known, and an easy way to interact with REST APIs.  
 
 ## Objectives:
 1. Utilize Environment Variables to store and retreive Access Keys.
@@ -193,11 +193,21 @@ curl --request POST \
 
 ## 3 - Save your script and execute it!
 
-In our scripts current form we should be able to invoke it and retrieve the JWT. 
-
-Let's test it out!  Save your script. 
-
-Execute it from the terminal by entering: `bash prisma_api_test.sh`. You should get a response that looks like this:
+In our scripts current form we should be able to invoke it and retrieve the JWT. Let's test it out!   
+   
+**Save and exit your script.**    
+   
+From the terminal, make your script executable with command `chmod +x <fileName>`.   
+```
+chmod +x prisma_api_test.sh
+```
+   
+Run the script using `./<fileName>`.
+```
+./prisma_api_test.sh
+```
+   
+You should get a response that looks like this:
 
 ```json
 {"token":"<SUPER_LONG_STRING>","message":"login_successful","customerNames":[{"customerName":"partnerdemo","tosAccepted":true}]}
@@ -205,8 +215,8 @@ Execute it from the terminal by entering: `bash prisma_api_test.sh`. You should 
 
 Uh-oh...well that's pretty ugly and also unusable to pass downstream for more api calls. Let's start leveraging jq. Enter the same command you entered before but add `| jq` to the end of it. This will "pretty print" the response so we can understand how to filter it for later use. 
 
-```bash
-bash prisma_api_test.sh | jq
+```
+./prisma_api_test.sh | jq
 ```
 
 Now our response will look something like this:
@@ -228,8 +238,8 @@ Now our response will look something like this:
 
 Okay...so now it's easier to look at. Let's use jq to filter out the token which is what we'll need for our next api call. To do that, we will first need to break down what we want. Ideally, we want the `"value"` of the `"token"` key. To isolate the `"value (or <SUPER_LONG_STRING>)"` of the token key we'll modify our command to: 
 
-```bash
-bash prisma_api_test.sh | jq -r '.token'
+```
+./prisma_api_test.sh | jq -r '.token'
 ```
 
 _Note: the `-r` removes the quotes._
@@ -275,8 +285,8 @@ After your script looks like the code block above, save the changes and exit.
 
 Now it's time to invoke your script again. 
 
-```bash
-bash prisma_api_test.sh
+```
+./prisma_api_test.sh
 ```
 
 You should see the curl progress and your JWT print out in the response. That's perfect. Now we can access all the other Prisma Cloud CSPM API's (It's a similar process with some minor tweaks when accessing the CWPP API.  We'll run through that in another tutorial).
@@ -313,8 +323,8 @@ echo "${pc_auth_token}"
 
 Save the script and run one more time.
 
-```bash
-bash prisma_api_test.sh
+```
+./prisma_api_test.sh
 ```
 
 ### Congratulations!   
