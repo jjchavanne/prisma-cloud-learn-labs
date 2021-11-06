@@ -112,21 +112,17 @@ The first line we'll type in our script is a she-bang. This ensures our script i
 #!/bin/bash
 ```
  
-Next, we want to replace the url with our `$PC_API_URL` environment variable + the api endpoint `/login` of the API request.   
-Replace this:
+Next, we want to replace the url with our `PC_API_URL` environment variable + the api endpoint `/login` of the API request. To properly call the variable, we need to add a `$` in front of it and surround the entire string with `""`. _Note: As a recommended practice, I'm also choosing to use `{}` around my variables.  See [Google Style Guide](https://google.github.io/styleguide/shellguide.html#variable-expansion)._    
+In summary, replace this:
 ```
-curl --request POST \
      --url https://api.prismacloud.io/login \
-     --header 'content-type: application/json; charset=UTF-8
 ```
 with this:
 ```
-curl --request POST \
      --url "${PC_API_URL}/login" \
-     --header 'content-type: application/json; charset=UTF-8
 ```
 
-Next, we need to define a single shell variable that includes our `PC_ACCESS_KEY` & `PC_SECRET_KEY` varaibles for the authentication (data) payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
+Next, we need to define a single shell variable that includes our `PC_ACCESS_KEY` & `PC_SECRET_KEY` variables for the authentication (data) payload.  Why?  The problem is, bash won't interpret the JSON data correctly if we assigned the raw JSON to a variable. To get around this we'll need to reformat the raw JSON so it's interpreted correctly. 
 
 There's multiple ways to do this and pros and cons to each. 
 
@@ -140,8 +136,8 @@ Instead and for simplicity's sake, I'm going to create this shell variable in th
 To do this, we will take our json payload below.  You'll notice I excluded the `"customerName"` and `"prismaId"` fields as they are not required:
 ```json
 {
-  "password":"$PC_SECRET_KEY", 
-  "username":"$PC_ACCESS_KEY"
+  "password":"${PC_SECRET_KEY}", 
+  "username":"${PC_ACCESS_KEY}"
 }
 ```
 And write that in our script using a HereDoc with:
@@ -152,8 +148,8 @@ And write that in our script using a HereDoc with:
 ```
 pc_auth_payload=$(cat <<JSONDATA
 {
-  "password":"$PC_SECRET_KEY", 
-  "username":"$PC_ACCESS_KEY"
+  "password":"${PC_SECRET_KEY}", 
+  "username":"${PC_ACCESS_KEY}"
 }
 JSONDATA
 )
@@ -182,8 +178,8 @@ Update the script to look like this:
 # Pass JSON data with our environment variables directly as a multi-line string to a shell variable.
 pc_auth_payload=$(cat <<JSONDATA
 {
-  "password":"$PC_SECRET_KEY", 
-  "username":"$PC_ACCESS_KEY"
+  "password":"${PC_SECRET_KEY}", 
+  "username":"${PC_ACCESS_KEY}"
 }
 JSONDATA
 )
@@ -238,9 +234,9 @@ bash prisma_api_test.sh | jq -r '.token'
 
 _Note: the `-r` removes the quotes._
 
-Now you have the TOKEN isolated! Perfect. Copy out the `| jq -r '.token'` from your terminal and edit your script again. We'll modify the script so it saves our first api call to another variable `$pc_auth_token` which we'll then use in another api call.
+Now you have the TOKEN isolated! Perfect. Copy out the `| jq -r '.token'` from your terminal and edit your script again. We'll modify the script so it saves our first api call to another variable `pc_auth_token` which we'll then use in another api call.
 
-So we can observe what's happening let's go ahead and `echo` the variable `$pc_auth_token` at the end of our script.
+So we can observe what's happening let's go ahead and `echo` the variable `pc_auth_token` at the end of our script.
 
 Re-open the script in your text editor:   
 > Example:
@@ -248,7 +244,7 @@ Re-open the script in your text editor:
 nano prisma_api_test.sh
 ```
 
-Our goal here is to assign the response to a variable named `$pc_auth_token`. To do that we'll wrap our `curl` command in `$()` and then adjust the formatting for maintainability.
+Our goal here is to assign the response to a variable named `pc_auth_token`. To do that we'll wrap our `curl` command in `$()` and then adjust the formatting for maintainability.
 
 Finally, we'll add the `echo "${pc_auth_token}"` to the end of our script so we can see that we've captured the JWT. 
 
@@ -258,8 +254,8 @@ Finally, we'll add the `echo "${pc_auth_token}"` to the end of our script so we 
 # Pass JSON data with our environment variables directly as a multi-line string to a shell variable.
 pc_auth_payload=$(cat <<JSONDATA
 {
-  "password":"$PC_SECRET_KEY", 
-  "username":"$PC_ACCESS_KEY"
+  "password":"${PC_SECRET_KEY}", 
+  "username":"${PC_ACCESS_KEY}"
 }
 JSONDATA
 )
@@ -299,8 +295,8 @@ Once edited, our script should now look like the code block below:
 # Pass JSON data with our environment variables directly as a multi-line string to a shell variable.
 pc_auth_payload=$(cat <<JSONDATA
 {
-  "password":"$PC_SECRET_KEY", 
-  "username":"$PC_ACCESS_KEY"
+  "password":"${PC_SECRET_KEY}", 
+  "username":"${PC_ACCESS_KEY}"
 }
 JSONDATA
 )
@@ -322,5 +318,5 @@ bash prisma_api_test.sh
 ```
 
 ### Congratulations!   
-**You have created a base template that can now empower you to interact with Prisma Cloud programmatically.  This is a huge foundational piece that now makes it easy to do so much more.  Move on to the next lab in this series:**   
+**You have created a base template now empowers you to interact with Prisma Cloud programmatically.  Move on to the next lab in this series:**   
 [API GET Requests](API_Lab2_GET_Request.md)
