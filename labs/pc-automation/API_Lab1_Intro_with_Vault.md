@@ -1,5 +1,7 @@
 # Prisma Cloud API Tutorial - Part 1
-   
+
+# IN DRAFT - PLANS TO BE REFACTORED
+
 **Learn how to securely automate tasks with the Prisma Cloud API**
 
 This lab uses one of our [Secrets Management tool building blocks].   I'm choosing to use Vault in 'Dev' mode for this tutorial, however because these labs are written in a modular fashion, you can swap out for another Secrets Management method if you desire.  
