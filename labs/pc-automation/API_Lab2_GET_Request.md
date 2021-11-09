@@ -1,5 +1,7 @@
 # Prisma Cloud API Tutorial Part - GET Request
 
+# IN DRAFT - NEEDS TO BE REFACTORED
+
 Building on Lab 1, we will now fetch some data from Prisma Cloud
 
 ## 0 - Getting Started
