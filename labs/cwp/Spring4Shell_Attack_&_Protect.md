@@ -1,4 +1,4 @@
-# Lab for simulating Spring4Sheel Attack on AWS and Protecting with Prisma Cloud
+# Lab for simulating Spring4Shell Attack on AWS and Protecting with Prisma Cloud
 
 These set of instructions are written to incorporate several compnonents.  Namely:
 - Discuss how we offer Agentless and the Pros & Cons of Agentless only
@@ -13,7 +13,7 @@ Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing
 - Complete all initial setup steps and Steps 1 & 2 of the 'Perform Attack Steps' and before runing the exploit script in Step 3.
 - Copy all the commands in the following steps in a notepad and pre-enter the Target-IP address.  This will save time in demo.
 - Login to Prisma Cloud and Initiate both:
-    - (Optional, noting that we only scan Hosts at this time, so willl only get results for the Host and see error for container) Agentless Scan - Monitor > Vulnerabilities > Host > Scan Agentless
+    - (Optional, noting that we only scan Hosts at this time, so will only get results for the Host and see error for container) Agentless Scan - Monitor > Vulnerabilities > Host > Scan Agentless
     - (Optional) Cloud Discovery on AWS - Monitor > Compliance > Cloud Discovery > Click on your account/EC2 service line.  Verify the new instances are shown here and as not defended.
 
 ## Install Defender
@@ -30,16 +30,16 @@ Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing
 3. Rule Name: **Spring4Shell Defense**
 4. Then click in the **'Scope'** field
 5. Make sure there is a Check box next to **All**.  Alternatively you can create a rule specific for this vulnerable Host.
-    - Step 5a: (OPTIONAL) If writing a specifc rule (not All) and there are none for your Host, click **'Add Collection'**, type in a name, Click in the **Host** field, select your vulnerable Host instance, and click **'Save'**
+    - Step 5a: (OPTIONAL) If writing a specifc rule (not All) and there are no Collections for your Host, click **'Add Collection'**, type in a name, Click in the **Host** field, select your vulnerable Host instance, and click **'Save'**
     - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
 6. Click **‘Add New App’**
 7. On the next pop-up click the **‘+ Add Endpoint’**
 8. Enter **80** for App port (internal port) then hit **‘Create’**
-9. Click the **‘App Firewall'** tab and confirm all settings are set to **Alert**, (with exception to Detect Information Leakage). 
+9. Click the **‘App Firewall'** tab and confirm all settings are set to **Alert**, (with exception to Detect Information Leakage which should be set to Disable by default). 
 10. Click **‘Save’**
 
 NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily and Allow Prisma Cloud to Discover the 
-vuln_app_app container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
+Vulnerable Host and Container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
 
 ## Pre-Demo verification Steps
 1. Verify on **Compute > Radars > Container** screen, the new vulnerable container has completed learning mode and shows the red firewall with a line through it, indicating it is an unprotected Web App
