@@ -17,12 +17,15 @@ Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing
     - (Optional) Cloud Discovery on AWS - Monitor > Compliance > Cloud Discovery > Click on your account/EC2 service line.  Verify the new instances are shown here and as not defended.
 
 ## Install Defender
-- Refer to [Install Defenders](https://github.com/jjchavanne/cheat-sheets/blob/main/prisma-cloud/Install_Defenders.md)
-1. Navigate to your AWS Console > EC2 > Click your **'spring4shell-ubuntu-lab'** instance
-2. Click **'Connect'**
-3. Copy the SSH command under SSH Client and login into your machine via a terminal session
-4. Refer to above directions, install twistci, export variables, and install a container defender
-5. Verify in the Console that it recognizes a Defender is now installed on device
+1. SSH to your spring4shell instance (not Kali), inserting your instance's IP address
+```
+ssh -i temp-lab/spring4shell_cloud_breach/terraform/panw ubuntu@<spring4shell-ubuntu-lab IP>
+```
+2. Refer to [Install Defenders](https://github.com/jjchavanne/cheat-sheets/blob/main/prisma-cloud/Install_Defenders.md) instructions and
+    - install twistci
+    - export variables
+    - install a container defender
+3. Verify in the Console that it recognizes a Defender is now installed on device
 
 ## Setup WAAS Rule - REFACTOR
 1. Go to Prisma Console (Enterprise Edition ONLY) - **Compute > Defend > WAAS > Host**
