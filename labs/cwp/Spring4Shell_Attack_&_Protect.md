@@ -6,10 +6,23 @@ These set of instructions are written to incorporate several compnonents.  Namel
 - Why any public facing workloads need Agents & Deploying a Container Defender
 - Why WAAS & enabling it
 
+## Prerequisites - ADD TO THIS
+
+## Things to Know
+Some important points to understand with the current lab scripts and setup.
+
+1. It will deploy 2 host machines and a container on one of the vulnerable machine.
+2. When running the attack, different events and incidents will occur on both the vulnerable host and the container.
+3. Because of this, it helps to understand the layers of the attack and commands that you will run.
+4. It also helps to understand what rules you are setting and the particular parts of the attack that each rule alerts/prevents.
+5. Make sure you run this lab at least a couple times to understand these things so you are prepared to explain/answer questions when demoing.
+6. Feel free to also make any suggestions/enhancements to this lab!
+    
 Do all of the following steps in advance of the demo
 
 ## Lab Setup
-Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing
+Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing. 
+
 - Complete all initial setup steps and Steps 1 & 2 of the 'Perform Attack Steps' and before runing the exploit script in Step 3.
 - Copy all the commands in the following steps in a notepad and pre-enter the Target-IP address.  This will save time in demo.
 - Login to Prisma Cloud and Initiate both:
