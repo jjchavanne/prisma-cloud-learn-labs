@@ -25,7 +25,7 @@ Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing
 5. Verify in the Console that it recognizes a Defender is now installed on device
 
 ## Setup WAAS Rule
-1. Go to Prisma Console (Enterprise Edition ONLY) - **Compute > Defend > WAAS**
+1. Go to Prisma Console (Enterprise Edition ONLY) - **Compute > Defend > WAAS > Host**
 2. Click **‘Add Rule’**
 3. Rule Name: **Spring4Shell Defense**
 4. Then click in the **'Scope'** field
@@ -47,9 +47,22 @@ vuln_app_app container in the Radars view after installing the defender during t
 2. Verify in **Compute > Monitor > Compliance > Cloud Discovery > Your Credentail/EC2 Service Line** shows the expected number of devices Defended.  The Kali Attacker machine should not be.  Ensure to state this in the demo if you show this.
 3. 
 
-## Begin Demo
-1. Navigate to **Compute > Radars > Containers** and click the **vuln_app_app** and highlight that it was recognized as a **Unprotected Web App**
+## Begin Demo - REFACTOR
+1. Navigate to **Compute > Radars > Containers** and click the **vuln_app_app** and **VERIFY THIS AND REFACTOR NOTING THIS MAY NEED TO BE DONE ON THE HOST** highlight that it was recognized as a **Unprotected Web App**
 2. Show vulnerabilities and Compliance issue.
 3. Click the **Defend** button and Enable the WAAS rule
 4. Show that the WAAS is only in Alert mode for now.
 5. Run the attack 
+
+### Show the events
+1. Navigate to **Compute > Monitor > Events > WAAS for hosts** and scroll to bottom.  Should see events for these attacks.  Discuss both.
+    - Code Injection
+    - Local File Inclusion
+2. Navigate to **Compute > Radars > Hosts** Locate the new Host and should show red hue around.  Click and show that it has been involved in an Incident.
+3. Navigate to **Compute > Monitor > Runtime > Incident Explorer** Should see incidents for these attacks.  Discuss both.
+    - Reverse Shell
+    - Lateral Movement
+
+## Cleanup
+1. Disable Host WAAS rule
+2. Exit SSH sessions and run the `bash destroy-lab.sh` script
