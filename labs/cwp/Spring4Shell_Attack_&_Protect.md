@@ -24,14 +24,14 @@ Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing
 4. Refer to above directions, install twistci, export variables, and install a container defender
 5. Verify in the Console that it recognizes a Defender is now installed on device
 
-## Setup WAAS Rule
+## Setup WAAS Rule - REFACTOR
 1. Go to Prisma Console (Enterprise Edition ONLY) - **Compute > Defend > WAAS > Host**
 2. Click **‘Add Rule’**
 3. Rule Name: **Spring4Shell Defense**
 4. Then click in the **'Scope'** field
-5. Check boxes of all images that have **vuln_app_app** in them.
-    - Step 5a: If there are none, click **'Add Collection'**, type in a name, type in **vuln_app** in the image field, select the image(s), and click **'Save'**
-    - Step 5b: Ensure you have the **vuln_app** boxes checked and click **'Select collections'**
+5. Make sure there is a Check box next to **All**.  Alternatively you can create a rule specific for this vulnerable Host.
+    - Step 5a: (OPTIONAL) If writing a specifc rule (not All) and there are none for your Host, click **'Add Collection'**, type in a name, Click in the **Host** field, select your vulnerable Host instance, and click **'Save'**
+    - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
 6. Click **‘Add New App’**
 7. On the next pop-up click the **‘+ Add Endpoint’**
 8. Enter **80** for App port (internal port) then hit **‘Create’**
