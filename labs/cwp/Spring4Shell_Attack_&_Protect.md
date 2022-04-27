@@ -90,6 +90,7 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 4. Go to the **Policy** tab under Trusted Images and if not already, click switch next to **Trusted images rules** to enable.
 5. Click **+ Add rule** and again refer to docs to create a new rule.
 6. For performing the demo, **'Disable'** the rule temporarily, under **Actions** and clicking the 3 dots. 
+7. Additionaly setup docker/AWS credentails on the spring4shell instance in order to pull images from your registry. (TODO - add detail here)
 
 ## Pre-Demo verification Steps
 1. Verify on **Compute > Radars > Container** screen, the new vulnerable container has completed learning mode and shows the red firewall with a line through it, indicating it is an unprotected Web App
@@ -157,6 +158,10 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 
 
 ## Additional Bonus - Integrate Demo with Shift Left Capabilities
+1. If you prepared to pull iamges from a registry, run a `docker pull` command to pull down an image from a trusted registry
+2. Run the container `docker run --rm -p 80:8080 <registry/image>`
+3. Highlight this container is considered safe to run as compared to the others.
+4. Then navigate to your registry, repos and show the scan results and how Prisma Cloud further extends it's capabilities into the developers areas and how we can setup these mutiple security gates to further ensure only compliant and safe images are allowed to be run through CI/CD pipelines and DevOps workflows and deployed to cloud (both on-prem and public) environments.
 
 ## Cleanup
 1. Disable your new Host WAAS rule
