@@ -137,7 +137,7 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
     - Re-run the bash exploit script `bash /tmp/exploit.sh` and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script.
     - Show the Events under **Compute > Monitor > Events > WAAS for Hosts**.  If there are mutiple counts, Zoom in on the latest.
 3. OPTIONAL - Prevent Container with Critical Vulnerabilities from even running
-    - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed**
+    - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed** and enable your new rule you created prior to demo with a Click on the 3 dots to the far right under Actions and **Enable**.
     - In the spring4shell-ubuntu terminal, kill the current container
         - Get the container ID of **vuln_app_app** `docker ps`
         - `docker kill <ID>`
@@ -161,7 +161,7 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 ## Cleanup
 1. Disable your new Host WAAS rule
 2. Disable your new Runtime Container Policy rule
-3. Disable other Rules you used (i.e. Vulnerabilities, Compliance, Trusted Images)
+3. Disable other Rules you used (i.e. Vulnerabilities, Compliance - Trusted Images)
 4. Exit SSH sessions and run the `bash destroy-lab.sh` script
 
 
