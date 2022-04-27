@@ -58,7 +58,7 @@ ssh -i temp-lab/spring4shell_cloud_breach/terraform/panw ubuntu@<spring4shell-ub
 
 NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots. and Allow Prisma Cloud to Discover the Vulnerable Host and Container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
 
-## Setup Runtime Ruke
+## Setup Runtime Rule
 1. Go to **Compute > Defend > Runtime > Container Policy
 2. Click **+ Add rule** 
 3. Enter a rule name such as: **Block reverse shell**
@@ -81,6 +81,14 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
     - Step 5a: Select your container selection (if already created) or Click **'Add Collection'**, type in a name, Click in the **Image** field, type in `vuln_app_app`, select it and click **'Save'**
     - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
 6. For performing the demo, **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots.
+
+## Setup Trusted Images Rule - OPTIONAL & Requires integration with a registry (TODO - Add more detail here)
+1. Go to **Compute > Defend > Compliance > Trusted Images > Trust Groups
+2. Click **+ Add group**
+3. Create new trust group - see [Trusted images docs](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-compute/compliance/trusted_images)
+4. Go to the **Policy** tab under Trusted Images and if not already, click switch next to **Trusted images rules** to enable.
+5. Click **+ Add rule** and again refer to docs to create a new rule.
+6. For performing the demo, **'Disable'** the rule temporarily, under **Actions** and clicking the 3 dots. 
 
 ## Pre-Demo verification Steps
 1. Verify on **Compute > Radars > Container** screen, the new vulnerable container has completed learning mode and shows the red firewall with a line through it, indicating it is an unprotected Web App
