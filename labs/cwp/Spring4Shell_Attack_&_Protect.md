@@ -58,13 +58,27 @@ ssh -i temp-lab/spring4shell_cloud_breach/terraform/panw ubuntu@<spring4shell-ub
 
 NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots. and Allow Prisma Cloud to Discover the Vulnerable Host and Container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
 
+## Setup Runtime Ruke
+1. Go to **Compute > Defend > Runtime > Container Policy
+2. Click **+ Add rule** 
+3. Enter a rule name such as: **Block reverse shell**
+4. Click in the **Scope** field
+5. Create a rule specific for this vulnerable Container app.
+    - Step 5a: Select your container selection (if already created) or Click **'Add Collection'**, type in a name, Click in the **Image** field, type in `vuln_app_app`, select it and click **'Save'**
+    - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
+6. Click **Processes** tab.
+7. Under **Denied & Fallback**, scroll near bottom and under **Processes** enter `/bin/bash`
+8. Change **Effect** from Alert to **Prevent**
+9. Click **Save**
+10. For performing the demo, **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots. 
+
 ## Setup Vulnerability Rule
 1. Go to **Compute > Defend > Vulnerabilities > Images > Deployed** and Click **+ Add Rule**
 2. Enter a name such as: Block Containers with Critical Vulnerabilities
 3. In the **Block threshold** section, change to Block on **Critical**
 4. Then click in the **'Scope'** field
 5. Create a rule specific for this vulnerable Container app.
-    - Step 5a: Click **'Add Collection'**, type in a name, Click in the **Image** field, type in `vuln_app_app`, select it and click **'Save'**
+    - Step 5a: Select your container selection (if already created) or Click **'Add Collection'**, type in a name, Click in the **Image** field, type in `vuln_app_app`, select it and click **'Save'**
     - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
 6. For performing the demo, **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots.
 
@@ -72,14 +86,13 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 1. Verify on **Compute > Radars > Container** screen, the new vulnerable container has completed learning mode and shows the red firewall with a line through it, indicating it is an unprotected Web App
     - This make take 10-20 mins after installing the Defender to show up.
 2. Verify in **Compute > Monitor > Compliance > Cloud Discovery > Your Credentail/EC2 Service Line** shows the expected number of devices Defended.  The Kali Attacker machine should not be.  Ensure to state this in the demo if you show this.
-3. 
 
 ## Begin Demo
 1. If you left the WAAS Rule(s) Disabled and you pre-checked the Unprotected Web App icon is present, then first Navigate to **Compute > Radars > Containers** and show the red firewall with a line through it. Click the **vuln_app_app** and highlight that it was recognized as a **Unprotected Web App**
 2. If the red firewall icon is not present (Prisma Cloud can take up to 30 mins. to recognize this), SKIP over highlighting this.
 3. Show vulnerabilities and Compliance issue.
 4. Either from the Container screen itself, Click the **Defend** button OR or through **Defend > WAAS**, go to the **Host** tab and Enable the WAAS rule.  Make sure you enable the **Host WAAS Rule, not a Container one**.
-5. Show that the WAAS is only in Alert mode for now.
+5. Show that the WAAS rule is only in Alert mode for now.
 6. Run the attack 
     - `bash /tmp/exploit.sh`
     - Remotely Install packages, install netcat with curl commands
@@ -106,26 +119,22 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 ### Turn on Defenses in Prisma Cloud
 1. Block Reverse Shell 
     - Exit the reverse shell in your terminal with **Control + C**
-    - In Prisma Cloud, Navigate to **Compute > Defend > Runtime > Container Policy** and Click the 3 dots to the far right on the rule and **Edit**.  Go to the **Processes** tab and change from Alert to **Prevent**
-    - Rerun nc command from terminal
+    - In Prisma Cloud, Navigate to **Compute > Defend > Runtime > Container Policy** and for your new rule you created prior to demo (i.e. 'Block reverse shell), Click the 3 dots to the far right on the rule and **Enable**.
+    - Rerun `nc -lvnp 9001` command from terminal
     - Reexecute payload command from other teminal.  
-    - This time, you should some long error message in the attacker's terminal and it should be blocked.  Navigate to Prisma Cloud to show event.
-2. REFACTOR & SYNC WITH STEPS 3&4 IN 'BEGIN DEMO' SECTION - Alert on Code Injection & Local File Inclusion
+    - This time, you should see that the reverse shell connection cannot be established.  Navigate to Prisma Cloud to show event under **Monitor > Events > Container audits**.
+2. Prevent the Code Injection & Local File Inclusion Attacks
     - Enable the Host WAAS Rule you created in prep
-    - Re-run the bash exploit script `bash /tmp/exploit.sh`
+    - Re-run the bash exploit script `bash /tmp/exploit.sh` and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script.
     - Show the Events under **Compute > Monitor > Events > WAAS for Hosts**.  If there are mutiple counts, Zoom in on the latest.
-3. Prevent the Code Injection & Local File Inclusion Attacks
-    - Edit the Host WAAS Rule to Prevent
-    - Re-run attack and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script
-    - Show in Primsa Cloud the event was Blocked/Prevented
-4. OPTIONAL - Prevent Container with Critical Vulnerabilities from even running
+3. OPTIONAL - Prevent Container with Critical Vulnerabilities from even running
     - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed**
     - In the spring4shell-ubuntu terminal, kill the current container
         - Get the container ID of **vuln_app_app** `docker ps`
         - `docker kill <ID>`
     - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
     - You should see a message that Image is blocked by your policy.
- 5. OPTIONAL - Prevent Running Container not from Trusted Registry/Repo/Image
+ 4. OPTIONAL - Prevent Running Container not from Trusted Registry/Repo/Image
     - Navigate to **Compute > Defend > Compliance > Trusted Images**
     - Enable your policy
     - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
@@ -141,8 +150,8 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 ## Additional Bonus - Integrate Demo with Shift Left Capabilities
 
 ## Cleanup
-1. Disable Host WAAS rule
-2. Change Runtime Container Policy, Processes from Prevent to Alert
+1. Disable your new Host WAAS rule
+2. Disable your new Runtime Container Policy rule
 3. Disable other Rules you used (i.e. Vulnerabilities, Compliance, Trusted Images)
 4. Exit SSH sessions and run the `bash destroy-lab.sh` script
 
