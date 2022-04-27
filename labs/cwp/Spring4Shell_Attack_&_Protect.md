@@ -58,7 +58,7 @@ ssh -i temp-lab/spring4shell_cloud_breach/terraform/panw ubuntu@<spring4shell-ub
 
 NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots. and Allow Prisma Cloud to Discover the Vulnerable Host and Container in the Radars view after installing the defender during the demo and that it shows that it is an Unprotected Web App.**. 
 
-## Setup Runtime Rule
+## Setup Runtime Rule(s)
 1. Go to **Compute > Defend > Runtime > Container Policy
 2. Click **+ Add rule** 
 3. Enter a rule name such as: **Block reverse shell**
@@ -71,6 +71,7 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 8. Change **Effect** from Alert to **Prevent**
 9. Click **Save**
 10. For performing the demo, **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots. 
+11. Additional create a default rule repeating all the above steps, however give a different name such as 'Default - alert on suspicious behavior` and leave all settings as is and Save.  This rule you can leave enabled and will show alerts when you run first part of demo.
 
 ## Setup Vulnerability Rule
 1. Go to **Compute > Defend > Vulnerabilities > Images > Deployed** and Click **+ Add Rule**
