@@ -83,6 +83,9 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
     - Step 5b: Ensure you have your desired collection box checked and click **'Select collections'**
 6. For performing the demo, **'Disable'** the alert temporarily, under **Actions** and clicking the 3 dots.
 
+## Setup Compliance Rule
+1. TODO - Add Detail here.
+
 ## Setup Trusted Images Rule - OPTIONAL & Requires integration with a registry (TODO - Add more detail here)
 1. Go to **Compute > Defend > Compliance > Trusted Images > Trust Groups
 2. Click **+ Add group**
@@ -144,7 +147,9 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
         - `docker kill <ID>`
     - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
     - You should see a message that Image is blocked by your policy.
- 4. OPTIONAL - Prevent Running Container not from Trusted Registry/Repo/Image
+ 4. OPTIONAL - Prevent Container from running that fails Compliance Rule
+    - Enable policy
+ 5. OPTIONAL - Prevent Running Container not from Trusted Registry/Repo/Image
     - Navigate to **Compute > Defend > Compliance > Trusted Images**
     - Enable your policy
     - Try creating a new container `docker run --rm -p 80:8080 vuln_app_app`
@@ -166,7 +171,7 @@ NOTE: For performing the demo, suggest to **'Disable'** the alert temporarily, u
 ## Cleanup
 1. Disable your new Host WAAS rule
 2. Disable your new Runtime Container Policy rule
-3. Disable other Rules you used (i.e. Vulnerabilities, Compliance - Trusted Images)
+3. Disable other Rules you used (i.e. Vulnerabilities, Compliance - Containers and images, Compliance - Trusted Images)
 4. Exit SSH sessions and run the `bash destroy-lab.sh` script
 
 
